@@ -84,6 +84,10 @@ i18nRouter(request, {
 
 # With react-intl
 
+```sh
+npm install react-intl
+```
+
 One of the most popular Javascript i18n libraries is `react-intl`. The `react-intl` library works great for Client Components, but with the App Router we'll have to make a minor change for usage with Server Components.
 
 We just need to create 2 helper files:
