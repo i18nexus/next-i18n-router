@@ -1,5 +1,6 @@
-const getLocale = require('../lib/getLocale');
-const mockRequest = require('./fixtures/mockRequest');
+import { NextRequest } from 'next/server';
+import getLocale from '../src/getLocale';
+import mockRequest from './fixtures/mockRequest';
 
 describe('getLocale', () => {
   it('should return en when en is in both lists', () => {
@@ -59,7 +60,7 @@ describe('getLocale', () => {
   });
 
   it('should use defaultLocale when cookie is not set', () => {
-    const request = mockRequest('/', ['en'], null);
+    const request = mockRequest('/', ['en']);
 
     const config = {
       locales: ['jp', 'zh'],

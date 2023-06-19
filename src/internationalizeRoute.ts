@@ -1,8 +1,12 @@
-const defaultGetLocale = require('./getLocale');
-const validateConfig = require('./validateConfig');
-const { NextResponse } = require('next/server');
+import defaultGetLocale from './getLocale';
+import validateConfig from './validateConfig';
+import { NextRequest, NextResponse } from 'next/server';
+import { Config } from './types';
 
-function internationalizeRoute(request, config) {
+function internationalizeRoute(
+  request: NextRequest,
+  config: Config
+): NextResponse {
   if (!request) {
     throw new Error(`internationalizeRoute requires a request argument.`);
   }
@@ -27,11 +31,17 @@ function internationalizeRoute(request, config) {
   );
 
   if (!pathLocale) {
-    const locale = getLocale(request, {
-      locales: locales,
-      defaultLocale: defaultLocale,
-      localeCookie: localeCookie
+    let locale = getLocale(request, {
+      locales,
+      defaultLocale,
+      localeCookie
     });
+
+    if (!locales.includes(locale)) {
+      console.warn("The getLocale callback must return a locale included in your locales array. Reverting to using defaultLocale.")
+      
+      locale = defaultLocale;
+    }
 
     // e.g. incoming request is /products
     // The new URL is now /en-US/products
@@ -45,4 +55,4 @@ function internationalizeRoute(request, config) {
   return response;
 }
 
-module.exports = internationalizeRoute;
+export default internationalizeRoute;

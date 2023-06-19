@@ -1,10 +1,12 @@
-const { NextResponse } = require('next/server');
-const i18nRouter = require('../index');
-const mockRequest = require('./fixtures/mockRequest');
+import { NextResponse }  from 'next/server';
+import i18nRouter from '../src/index';
+import mockRequest from './fixtures/mockRequest';
 
 describe('internationalizeRoutes', () => {
   it('should throw an error if locales is not an array', () => {
     const config = { locales: 'invalid', defaultLocale: 'en-US' };
+    
+    // @ts-ignore
     expect(() => i18nRouter(mockRequest('/', ['en']), config)).toThrow(
       /locales/
     );
@@ -12,6 +14,8 @@ describe('internationalizeRoutes', () => {
 
   it('should throw an error if defaultLocale is not defined', () => {
     const config = { locales: ['en-US'] };
+    
+    // @ts-ignore
     expect(() => i18nRouter(mockRequest('/', ['en']), config)).toThrow(
       /defaultLocale/
     );
@@ -30,12 +34,15 @@ describe('internationalizeRoutes', () => {
       defaultLocale: 'en-US',
       getLocale: 'invalid'
     };
+
+    // @ts-ignore
     expect(() => i18nRouter(mockRequest('/', ['en']), config)).toThrow(
       /getLocale/
     );
   });
 
   it('should throw an error if request argument is missing', () => {
+    // @ts-ignore
     expect(() => i18nRouter()).toThrow(/request/);
   });
 
