@@ -8,7 +8,7 @@
 
 With the release of the App Router, internationalized routing has been removed as a built-in Next.js feature. This library adds back internationalized routing in addition to locale detection and optional cookie usage to set a user's current language.
 
-Unlike other implementations, this library does **not** require you to wrap all your pages in a `[lang]` path segment. Our default language can be accessed from the base path without a path prefix!
+Unlike other implementations, this library does **not** require you to wrap all your pages in a `[lang]` path segment. The default language can be accessed from the base path without a language prefix.
 
 ## Installation
 
