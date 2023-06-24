@@ -4,5 +4,6 @@ export interface Config {
   locales: string[];
   defaultLocale: string;
   localeCookie?: string;
-  getLocale?: (request: NextRequest, config: Config) => string;
+  localeDetector?: ((request: NextRequest, config: Config) => string) | false;
+  prefixDefault?: boolean;
 }

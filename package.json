@@ -1,6 +1,6 @@
 {
   "name": "next-i18n-router",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Next.js App Router internationalized routing and locale detection.",
   "repository": "https://github.com/i18nexus/next-i18n-router",
   "keywords": [

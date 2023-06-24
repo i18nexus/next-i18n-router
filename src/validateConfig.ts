@@ -15,8 +15,8 @@ function validateConfig(config: Config): void {
     );
   }
 
-  if (config.getLocale && typeof config.getLocale !== 'function') {
-    throw new Error(`'getLocale' must be a function.`);
+  if (config.localeDetector && typeof config.localeDetector !== 'function') {
+    throw new Error(`'localeDetector' must be a function.`);
   }
 }
 
