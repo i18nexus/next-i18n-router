@@ -6,4 +6,5 @@ export interface Config {
   localeCookie?: string;
   localeDetector?: ((request: NextRequest, config: Config) => string) | false;
   prefixDefault?: boolean;
+  basePath?: string;
 }

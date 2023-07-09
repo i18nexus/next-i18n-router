@@ -17,12 +17,14 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     defaultLocale,
     localeCookie = 'NEXT_LOCALE',
     localeDetector = defaultLocaleDetector,
-    prefixDefault = false
+    prefixDefault = false,
+    basePath = ''
   } = config;
 
   validateConfig(config);
 
   const pathname = request.nextUrl.pathname;
+  const basePathTrailingSlash = basePath.endsWith('/');
 
   const pathLocale = locales.find(
     locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
@@ -57,15 +59,22 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
 
     if (prefixDefault || locale !== defaultLocale) {
       return NextResponse.redirect(
-        new URL(`/${locale}${pathname}`, request.url)
+        new URL(
+          `${basePath}${basePathTrailingSlash ? '' : '/'}${locale}${pathname}`,
+          request.url
+        )
       );
     }
   }
 
   if (!prefixDefault && pathLocale === defaultLocale) {
-    const path = pathname.slice(`/${defaultLocale}`.length) || '/';
+    let path = pathname.slice(`/${defaultLocale}`.length) || '/';
 
-    return NextResponse.redirect(new URL(path, request.url));
+    if (basePathTrailingSlash) {
+      path = path.slice(1);
+    }
+
+    return NextResponse.redirect(new URL(`${basePath}${path}`, request.url));
   }
 
   const response = NextResponse.next();

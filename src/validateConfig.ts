@@ -2,11 +2,11 @@ import { Config } from './types';
 
 function validateConfig(config: Config): void {
   if (!Array.isArray(config.locales)) {
-    throw new Error(`initialize requires a 'locales' array as an argument.`);
+    throw new Error(`The config requires a 'locales' array.`);
   }
 
   if (!config.defaultLocale) {
-    throw new Error(`initialize requires a 'defaultLocale' as an argument.`);
+    throw new Error(`The config requires a 'defaultLocale'.`);
   }
 
   if (!config.locales.includes(config.defaultLocale)) {
