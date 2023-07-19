@@ -73,6 +73,7 @@ You now have internationalized routing!
 | `localeDetector` | (See below)     | function \| false |           |
 | `localeCookie`   | `'NEXT_LOCALE'` | string            |           |
 | `prefixDefault`  | `false`         | boolean           |           |
+| `basePath`       | `''`            | string            |           |
 
 ## Locale Detection
 
@@ -107,13 +108,56 @@ If you would prefer to use a different cookie key other than `NEXT_LOCALE`, you 
 
 ## Locale Path Prefixing
 
-By default, the `defaultLocale` uses the base path without a prefix. For example, if `defaultLocale` is set to `en` and `locales` is set to `['en', 'de']`, the paths will appear as follows:
+By default, the `defaultLocale`'s path is not prefixed with the locale. For example, if `defaultLocale` is set to `en` and `locales` is set to `['en', 'de']`, the paths will appear as follows:
 
 **English**: `/products`
 
 **German**: `/de/products`
 
-To include your default language in the path, set the `prefixDefault` config option to `false`.
+To include your default language in the path, set the `prefixDefault` config option to `true`.
+
+## Getting the current locale
+
+The current locale can be retrieved in a Server Component using the `currentLocale` function. In a Client Component, you can use the `useCurrentLocale` hook.
+
+Server Component:
+
+```js
+import { currentLocale } from 'next-i18n-router';
+
+function ExampleServerComponent() {
+  const locale = currentLocale();
+
+  ...
+}
+```
+
+Client Component:
+
+```js
+'use client';
+
+import { useCurrentLocale } from 'next-i18n-router/client';
+import i18nConfig from '@/i18nConfig';
+
+function ExampleClientComponent() {
+  const locale = useCurrentLocale(i18nConfig);
+
+  ...
+}
+```
+
+## Using basePath (optional)
+
+If you are using the `basePath` option in `next.config.js`, you need to also include it as the `basePath` option in your `i18nConfig`.
+
+As can be read about [here](https://github.com/vercel/next.js/issues/47085), you will also need to update your `matcher` in your middleware config to include `{ source: '/' }`:
+
+```js
+export const config = {
+  matcher: ['/((?!api|static|.*\\..*|_next).*)', { source: '/' }]
+};
+```
 
 # With react-intl
 
@@ -134,14 +178,14 @@ Create a `useIntl` function to be used in Server Components. We will use the bas
 
 import { createIntl } from '@formatjs/intl';
 import { headers } from 'next/headers';
+import { currentLocale } from 'next-i18n-router';
 
 const getMessages = async lang => {
   return (await import(`./messages/${lang}.json`)).default;
 };
 
 export default async function useIntl() {
-  // get current lang from header set by next-i18n-router
-  const lang = headers().get('x-next-i18n-router-locale');
+  const lang = currentLocale();
 
   return createIntl({
     locale: lang,

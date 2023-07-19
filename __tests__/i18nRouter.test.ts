@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { i18nRouter } from '../src/index';
+import { i18nRouter } from '../src';
 import mockRequest from './fixtures/mockRequest';
 
-const basePaths = ['', 'with-basepath'];
+const basePaths = ['', '/with-basepath'];
 
 basePaths.forEach(basePath => {
   describe(`i18nRouter${basePath ? ' with basePath' : ''}`, () => {

@@ -1,4 +1,3 @@
-import { NextRequest } from 'next/server';
 import localeDetector from '../src/localeDetector';
 import mockRequest from './fixtures/mockRequest';
 

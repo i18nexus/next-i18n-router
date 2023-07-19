@@ -1,4 +1,5 @@
-import i18nRewriter, { Rewrite } from '../src/i18nRewriter';
+import { Rewrite } from '../src/i18nRewriter';
+import { i18nRewriter } from '../src';
 import { Config } from '../src/types';
 
 describe('i18nRewriter', () => {
