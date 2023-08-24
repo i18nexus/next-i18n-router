@@ -45,7 +45,7 @@ export const config = {
 };
 ```
 
-Update your `next.config.json` to call `i18nRewriter` in the `rewrites` async function:
+Update your `next.config.js` to call `i18nRewriter` in the `rewrites` async function:
 
 ```js
 const { i18nRewriter } = require('next-i18n-router');
@@ -171,20 +171,19 @@ We just need to create 2 helper files:
 
 ### app/intl.js
 
-Create a `useIntl` function to be used in Server Components. We will use the base `intl` library that is bundled with `react-intl`:
+Create a `getIntl` function to be used in Server Components. We will use the base `intl` library that is bundled with `react-intl`:
 
 ```js
 'server-only';
 
 import { createIntl } from '@formatjs/intl';
-import { headers } from 'next/headers';
 import { currentLocale } from 'next-i18n-router';
 
 const getMessages = async lang => {
   return (await import(`./messages/${lang}.json`)).default;
 };
 
-export default async function useIntl() {
+export default async function getIntl() {
   const lang = currentLocale();
 
   return createIntl({
@@ -203,7 +202,7 @@ Second, create a helper provider to use when nesting a Client Component in a Ser
 
 import { IntlProvider } from 'react-intl';
 
-export default async function ServerIntlProvider({ intl, children }) {
+export default function ServerIntlProvider({ intl, children }) {
   return <IntlProvider {...intl}>{children}</IntlProvider>;
 }
 ```
@@ -213,12 +212,12 @@ export default async function ServerIntlProvider({ intl, children }) {
 **app/page.js**
 
 ```js
-import useIntl from 'app/intl';
+import getIntl from 'app/intl';
 import ServerIntlProvider from 'components/ServerIntlProvider';
 import AClientComponent from 'components/AClientComponent';
 
 async function Home() {
-  const intl = await useIntl();
+  const intl = await getIntl();
 
   return (
     <main>
@@ -243,7 +242,7 @@ export default Home;
 
 import { FormattedMessage } from 'react-intl';
 
-export default async function AClientComponent({ intl }) {
+export default function AClientComponent() {
   return (
     <h3>
       <FormattedMessage id="greeting" />
