@@ -3,7 +3,7 @@ import validateConfig from './validateConfig';
 import { NextRequest, NextResponse } from 'next/server';
 import { Config } from './types';
 
-function i18nRouter(request: NextRequest, config: Config): NextResponse {
+function i18nRouter(request: NextRequest, config: Config, response?: NextResponse): NextResponse {
   if (!request) {
     throw new Error(`i18nRouter requires a request argument.`);
   }
@@ -77,8 +77,10 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     return NextResponse.redirect(new URL(`${basePath}${path}`, request.url));
   }
 
-  const response = NextResponse.next();
-
+  if (!response){
+    response = NextResponse.next();
+  }
+  
   response.headers.set(
     'x-next-i18n-router-locale',
     pathLocale || defaultLocale
