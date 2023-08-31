@@ -3,7 +3,7 @@ import validateConfig from './validateConfig';
 import { NextRequest, NextResponse } from 'next/server';
 import { Config } from './types';
 
-function i18nRouter(request: NextRequest, config: Config, response: null | NextResponse = null): NextResponse {
+function i18nRouter(request: NextRequest, config: Config, response?: NextResponse): NextResponse {
   if (!request) {
     throw new Error(`i18nRouter requires a request argument.`);
   }
