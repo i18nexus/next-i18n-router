@@ -3,7 +3,11 @@ import validateConfig from './validateConfig';
 import { NextRequest, NextResponse } from 'next/server';
 import { Config } from './types';
 
-function i18nRouter(request: NextRequest, config: Config, response?: NextResponse): NextResponse {
+function i18nRouter(
+  request: NextRequest,
+  config: Config,
+  response?: NextResponse
+): NextResponse {
   if (!request) {
     throw new Error(`i18nRouter requires a request argument.`);
   }
@@ -58,9 +62,15 @@ function i18nRouter(request: NextRequest, config: Config, response?: NextRespons
     }
 
     if (prefixDefault || locale !== defaultLocale) {
+      let path = `${locale}${pathname}`;
+
+      if (request.nextUrl.search) {
+        path += request.nextUrl.search;
+      }
+
       return NextResponse.redirect(
         new URL(
-          `${basePath}${basePathTrailingSlash ? '' : '/'}${locale}${pathname}`,
+          `${basePath}${basePathTrailingSlash ? '' : '/'}${path}`,
           request.url
         )
       );
@@ -74,13 +84,17 @@ function i18nRouter(request: NextRequest, config: Config, response?: NextRespons
       path = path.slice(1);
     }
 
+    if (request.nextUrl.search) {
+      path += request.nextUrl.search;
+    }
+
     return NextResponse.redirect(new URL(`${basePath}${path}`, request.url));
   }
 
-  if (!response){
+  if (!response) {
     response = NextResponse.next();
   }
-  
+
   response.headers.set(
     'x-next-i18n-router-locale',
     pathLocale || defaultLocale
