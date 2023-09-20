@@ -60,7 +60,7 @@ basePaths.forEach(basePath => {
       expect(useCurrentLocale(config)).toEqual('en');
     });
 
-    it('should return null when no locale and prefixDefault is true', () => {
+    it('should return undefined when no locale and prefixDefault is true', () => {
       pathname = `/products/2`;
 
       const config = {
@@ -70,7 +70,7 @@ basePaths.forEach(basePath => {
         basePath
       };
 
-      expect(useCurrentLocale(config)).toEqual(null);
+      expect(useCurrentLocale(config)).toEqual(undefined);
     });
   });
 });

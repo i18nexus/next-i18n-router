@@ -3,7 +3,7 @@
 import { Config } from '../types';
 import { usePathname } from 'next/navigation';
 
-const useCurrentLocale = (i18nConfig: Config): string | null => {
+const useCurrentLocale = (i18nConfig: Config): string | undefined => {
   const { basePath = '', locales } = i18nConfig;
 
   const currentPathname = usePathname();
@@ -30,7 +30,7 @@ const useCurrentLocale = (i18nConfig: Config): string | null => {
   if (!i18nConfig.prefixDefault) {
     return i18nConfig.defaultLocale;
   } else {
-    return null;
+    return undefined;
   }
 };
 

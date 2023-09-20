@@ -204,8 +204,12 @@ Second, create a helper provider to use when nesting a Client Component in a Ser
 
 import { IntlProvider } from 'react-intl';
 
-export default function ServerIntlProvider({ intl, children }) {
-  return <IntlProvider {...intl}>{children}</IntlProvider>;
+export default function ServerIntlProvider({ messages, locale, children }) {
+  return (
+    <IntlProvider messages={messages} locale={locale}>
+      {children}
+    </IntlProvider>
+  );
 }
 ```
 
@@ -216,19 +220,19 @@ export default function ServerIntlProvider({ intl, children }) {
 ```js
 import getIntl from 'app/intl';
 import ServerIntlProvider from 'components/ServerIntlProvider';
-import AClientComponent from 'components/AClientComponent';
+import ExampleClientComponent from 'components/ExampleClientComponent';
 
 async function Home() {
   const intl = await getIntl();
 
   return (
-    <main>
-      <h1>{intl.formatMessage({ id: 'header' })}</h1>
-      <ServerIntlProvider
-        intl={{ messages: intl.messages, locale: intl.locale }}>
-        <AClientComponent />
-      </ServerIntlProvider>
-    </main>
+    <ServerIntlProvider messages={intl.messages} locale={intl.locale}>
+      <main>
+        <h1>{intl.formatMessage({ id: 'header' })}</h1>
+
+        <ExampleClientComponent />
+      </main>
+    </ServerIntlProvider>
   );
 }
 
@@ -237,19 +241,17 @@ export default Home;
 
 **Reminder:** We only need to wrap **top level Client Components** with our `ServerIntlProvider`. We can then nest as many client components as we need without having to use the provider again.
 
-**components/AClientComponent.js**
+**components/ExampleClientComponent.js**
 
 ```js
 'use client';
 
-import { FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
 
-export default function AClientComponent() {
-  return (
-    <h3>
-      <FormattedMessage id="greeting" />
-    </h3>
-  );
+export default function ExampleClientComponent() {
+  const { formatMessage } = useIntl();
+
+  return <h3>{formatMessage({ id: 'greeting' })}</h3>;
 }
 ```
 
