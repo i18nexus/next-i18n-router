@@ -29,7 +29,8 @@ const i18nConfig = {
 module.exports = i18nConfig;
 ```
 
-Create a `middleware.js` file at the root of your project where the `i18nRouter` will be used to provide internationalized redirects:
+Create a `middleware.js` file at the root of your project (at the same level as pages or app, or inside src if applicable) where the `i18nRouter` will be used to provide internationalized redirects:
+
 
 ```js
 import { i18nRouter } from 'next-i18n-router';
