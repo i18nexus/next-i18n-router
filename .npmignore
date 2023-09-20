@@ -2,3 +2,4 @@ node_modules/
 src/
 __tests__/
 jest.config.ts
+examples/
