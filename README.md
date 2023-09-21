@@ -8,7 +8,7 @@
 
 With the release of the App Router, internationalized routing has been removed as a built-in Next.js feature. This library adds back internationalized routing in addition to locale detection and optional cookie usage to set a user's current language.
 
-Unlike other implementations, this library does **not** require you to wrap all your pages in a `[lang]` path segment. The default language can be accessed from the base path without a language prefix.
+Unlike other implementations, wrapping all your pages in a `[locale]` path segment is optional and the default language can be accessed from the base path without a language prefix.
 
 ## Installation
 
@@ -29,15 +29,13 @@ const i18nConfig = {
 module.exports = i18nConfig;
 ```
 
-Create a `middleware.js` file at the root of your project where the `i18nRouter` will be used to provide internationalized redirects:
+Create a `middleware.js` file at the root of your project (or in `/src` if using `/src` directory) where the `i18nRouter` will be used to provide internationalized redirects and rewrites:
 
 ```js
 import { i18nRouter } from 'next-i18n-router';
 import i18nConfig from './i18nConfig';
 
 export function middleware(request) {
-  // If you already have middleware that generates a response,
-  // you can pass the response as a third argument for i18nRouter to use.
   return i18nRouter(request, i18nConfig);
 }
 
@@ -47,35 +45,29 @@ export const config = {
 };
 ```
 
-Update your `next.config.js` to call `i18nRewriter` in the `rewrites` async function:
-
-```js
-const { i18nRewriter } = require('next-i18n-router');
-const i18nConfig = require('./i18nConfig');
-
-const nextConfig = {
-  async rewrites() {
-    return {
-      afterFiles: i18nRewriter(i18nConfig)
-    };
-  }
-};
-
-module.exports = nextConfig;
-```
-
 You now have internationalized routing!
 
 ## Config Options
 
-| Option           | Default value   | Type              | Required? |
-| ---------------- | --------------- | ----------------- | --------- |
-| `locales`        |                 | string[]          | &#10004;  |
-| `defaultLocale`  |                 | string            | &#10004;  |
-| `localeDetector` | (See below)     | function \| false |           |
-| `localeCookie`   | `'NEXT_LOCALE'` | string            |           |
-| `prefixDefault`  | `false`         | boolean           |           |
-| `basePath`       | `''`            | string            |           |
+| Option            | Default value   | Type                          | Required? |
+| ----------------- | --------------- | ----------------------------- | --------- |
+| `locales`         |                 | string[]                      | &#10004;  |
+| `defaultLocale`   |                 | string                        | &#10004;  |
+| `prefixDefault`   | `false`         | boolean                       |           |
+| `localeDetector`  | (See below)     | function \| false             |           |
+| `localeCookie`    | `'NEXT_LOCALE'` | string                        |           |
+| `routingStrategy` | 'rewrite'       | 'rewrite' \| 'dynamicSegment' |           |
+| `basePath`        | `''`            | string                        |           |
+
+## Locale Path Prefixing
+
+By default, the `defaultLocale`'s path is not prefixed with the locale. For example, if `defaultLocale` is set to `en` and `locales` is set to `['en', 'de']`, the paths will appear as follows:
+
+**English**: `/products`
+
+**German**: `/de/products`
+
+To include your default language in the path, set the `prefixDefault` config option to `true`.
 
 ## Locale Detection
 
@@ -100,23 +92,53 @@ const i18nConfig = {
 module.exports = i18nConfig;
 ```
 
-You can also set `localeDetector` option to `false` if you wish to opt out of any locale detection.
+You can also set the `localeDetector` option to `false` if you wish to opt out of any locale detection.
 
 ### Locale Cookie (optional)
 
-You can also override the `localeDetector` using the `NEXT_LOCALE=the-locale` cookie. For example, you can set this cookie when a user opts to change to a different language. When they return to your site, their preferred language will already be set.
+You can override the `localeDetector` using the `NEXT_LOCALE=the-locale` cookie. For example, you can set this cookie when a user opts to change to a different language. When they return to your site, their preferred language will already be set.
 
 If you would prefer to use a different cookie key other than `NEXT_LOCALE`, you can set the `localeCookie` option.
 
-## Locale Path Prefixing
+## Choosing the `routingStrategy` (optional)
 
-By default, the `defaultLocale`'s path is not prefixed with the locale. For example, if `defaultLocale` is set to `en` and `locales` is set to `['en', 'de']`, the paths will appear as follows:
+By default, this library uses rewrites to add the current locale to the pathname. This is a convenient developer experience, but it means that you cannot run `generateStaticParams` to generate pages for all languages at build time.
 
-**English**: `/products`
+To do this, you can set `routingStrategy` to `'dynamicSegment'`. This strategy requires you to add a dynamic segment folder to wrap all pages and layouts in your `app` directory:
 
-**German**: `/de/products`
+```
+├── middleware.js
+└── app
+    └── [locale]
+        ├── layout.js
+        └── page.js
+```
 
-To include your default language in the path, set the `prefixDefault` config option to `true`.
+This strategy enables you to use `generateStaticParams` for all locales in `layout.js`:
+
+```js
+...
+import i18nConfig from '@/i18nConfig';
+
+export function generateStaticParams() {
+  return i18nConfig.locales.map(locale => { locale });
+}
+...
+```
+
+That's it! Everything else works the same.
+
+## Using `basePath` (optional)
+
+This is only needed if you are using the `basePath` option in `next.config.js`. You will need to also include it as the `basePath` option in your `i18nConfig`.
+
+As can be read about [here](https://github.com/vercel/next.js/issues/47085), you will also need to update your `matcher` in your middleware config to include `{ source: '/' }`:
+
+```js
+export const config = {
+  matcher: ['/((?!api|static|.*\\..*|_next).*)', { source: '/' }]
+};
+```
 
 ## Getting the current locale
 
@@ -149,112 +171,10 @@ function ExampleClientComponent() {
 }
 ```
 
-## Using basePath (optional)
-
-If you are using the `basePath` option in `next.config.js`, you need to also include it as the `basePath` option in your `i18nConfig`.
-
-As can be read about [here](https://github.com/vercel/next.js/issues/47085), you will also need to update your `matcher` in your middleware config to include `{ source: '/' }`:
-
-```js
-export const config = {
-  matcher: ['/((?!api|static|.*\\..*|_next).*)', { source: '/' }]
-};
-```
-
 # With react-intl
 
-```sh
-npm install react-intl
-```
+One of the most popular Javascript i18n libraries is `react-intl`. The `react-intl` library works great for Client Components, but with the App Router we'll have to make a few changes for usage with Server Components.
 
-One of the most popular Javascript i18n libraries is `react-intl`. The `react-intl` library works great for Client Components, but with the App Router we'll have to make a minor change for usage with Server Components.
+For a full walkthrough on using react-intl with this library (plus automated Google Translate/DeepL integration), see [this tutorial](https://i18nexus.com/tutorials/nextjs/react-intl).
 
-We just need to create 2 helper files:
-
-### app/intl.js
-
-Create a `getIntl` function to be used in Server Components. We will use the base `intl` library that is bundled with `react-intl`:
-
-```js
-'server-only';
-
-import { createIntl } from '@formatjs/intl';
-import { currentLocale } from 'next-i18n-router';
-
-const getMessages = async lang => {
-  return (await import(`./messages/${lang}.json`)).default;
-};
-
-export default async function getIntl() {
-  const lang = currentLocale();
-
-  return createIntl({
-    locale: lang,
-    messages: await getMessages(lang)
-  });
-}
-```
-
-### components/ServerIntlProvider.js
-
-Second, create a helper provider to use when nesting a Client Component in a Server Component.
-
-```js
-'use client';
-
-import { IntlProvider } from 'react-intl';
-
-export default function ServerIntlProvider({ messages, locale, children }) {
-  return (
-    <IntlProvider messages={messages} locale={locale}>
-      {children}
-    </IntlProvider>
-  );
-}
-```
-
-## Example react-intl usage:
-
-**app/page.js**
-
-```js
-import getIntl from 'app/intl';
-import ServerIntlProvider from 'components/ServerIntlProvider';
-import ExampleClientComponent from 'components/ExampleClientComponent';
-
-async function Home() {
-  const intl = await getIntl();
-
-  return (
-    <ServerIntlProvider messages={intl.messages} locale={intl.locale}>
-      <main>
-        <h1>{intl.formatMessage({ id: 'header' })}</h1>
-
-        <ExampleClientComponent />
-      </main>
-    </ServerIntlProvider>
-  );
-}
-
-export default Home;
-```
-
-**Reminder:** We only need to wrap **top level Client Components** with our `ServerIntlProvider`. We can then nest as many client components as we need without having to use the provider again.
-
-**components/ExampleClientComponent.js**
-
-```js
-'use client';
-
-import { useIntl } from 'react-intl';
-
-export default function ExampleClientComponent() {
-  const { formatMessage } = useIntl();
-
-  return <h3>{formatMessage({ id: 'greeting' })}</h3>;
-}
-```
-
-That's it!
-
-You can read more in the [intl](https://formatjs.io/docs/intl) docs and the [react-intl](https://formatjs.io/docs/react-intl) docs.
+You can also find an example project [here](https://github.com/i18nexus/next-i18n-router/tree/main/examples/react-intl-example).
