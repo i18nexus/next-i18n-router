@@ -114,6 +114,8 @@ To do this, you can set `routingStrategy` to `'dynamicSegment'`. This strategy r
         └── page.js
 ```
 
+This example is using `[locale]` as the dynamic segment, but it can be named whatever you want.
+
 This strategy enables you to use `generateStaticParams` for all locales in `layout.js`:
 
 ```js
