@@ -3,11 +3,7 @@ import validateConfig from './validateConfig';
 import { NextRequest, NextResponse } from 'next/server';
 import { Config } from './types';
 
-function i18nRouter(
-  request: NextRequest,
-  config: Config,
-  response?: NextResponse
-): NextResponse {
+function i18nRouter(request: NextRequest, config: Config): NextResponse {
   if (!request) {
     throw new Error(`i18nRouter requires a request argument.`);
   }
@@ -22,10 +18,13 @@ function i18nRouter(
     localeCookie = 'NEXT_LOCALE',
     localeDetector = defaultLocaleDetector,
     prefixDefault = false,
-    basePath = ''
+    basePath = '',
+    routingStrategy = 'rewrite'
   } = config;
 
   validateConfig(config);
+
+  let response;
 
   const pathname = request.nextUrl.pathname;
   const basePathTrailingSlash = basePath.endsWith('/');
@@ -37,6 +36,7 @@ function i18nRouter(
   if (!pathLocale) {
     let locale;
 
+    // check cookie for locale
     if (localeCookie) {
       const cookieValue = request.cookies.get(localeCookie)?.value;
 
@@ -45,6 +45,7 @@ function i18nRouter(
       }
     }
 
+    // if no cookie, detect locale with localeDetector
     if (!locale) {
       if (localeDetector === false) {
         locale = defaultLocale;
@@ -61,34 +62,56 @@ function i18nRouter(
       locale = defaultLocale;
     }
 
+    let newPath = `${locale}${pathname}`;
+
+    if (request.nextUrl.search) {
+      newPath += request.nextUrl.search;
+    }
+
+    // redirect to prefixed path
     if (prefixDefault || locale !== defaultLocale) {
-      let path = `${locale}${pathname}`;
-
-      if (request.nextUrl.search) {
-        path += request.nextUrl.search;
-      }
-
       return NextResponse.redirect(
         new URL(
-          `${basePath}${basePathTrailingSlash ? '' : '/'}${path}`,
+          `${basePath}${basePathTrailingSlash ? '' : '/'}${newPath}`,
           request.url
         )
       );
     }
-  }
 
-  if (!prefixDefault && pathLocale === defaultLocale) {
-    let path = pathname.slice(`/${defaultLocale}`.length) || '/';
+    // If we get here, we're using the defaultLocale.
+    // If using dynamicSegment without prefix, rewrite with content of /default
+    if (routingStrategy === 'dynamicSegment' && !prefixDefault) {
+      response = NextResponse.rewrite(
+        new URL(`${basePath}${newPath}`, request.url)
+      );
+    }
+  } else {
+    let pathWithoutLocale = pathname.slice(`/${defaultLocale}`.length) || '/';
 
     if (basePathTrailingSlash) {
-      path = path.slice(1);
+      pathWithoutLocale = pathWithoutLocale.slice(1);
     }
 
     if (request.nextUrl.search) {
-      path += request.nextUrl.search;
+      pathWithoutLocale += request.nextUrl.search;
     }
 
-    return NextResponse.redirect(new URL(`${basePath}${path}`, request.url));
+    // If /default, redirect to /
+    if (!prefixDefault && pathLocale === defaultLocale) {
+      return NextResponse.redirect(
+        new URL(`${basePath}${pathWithoutLocale}`, request.url)
+      );
+    }
+
+    // If rewrite strategy, rewrite with content of path
+    if (
+      routingStrategy === 'rewrite' &&
+      (prefixDefault || pathLocale !== defaultLocale)
+    ) {
+      response = NextResponse.rewrite(
+        new URL(`${basePath}${pathWithoutLocale}`, request.url)
+      );
+    }
   }
 
   if (!response) {

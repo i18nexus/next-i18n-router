@@ -18,6 +18,15 @@ function validateConfig(config: Config): void {
   if (config.localeDetector && typeof config.localeDetector !== 'function') {
     throw new Error(`'localeDetector' must be a function.`);
   }
+
+  if (
+    config.routingStrategy &&
+    !['rewrite', 'dynamicSegment'].includes(config.routingStrategy)
+  ) {
+    throw new Error(
+      `'routingStategy' must either be 'rewrite' or 'dynamicSegment'.`
+    );
+  }
 }
 
 export default validateConfig;

@@ -3,8 +3,6 @@ import i18nConfig from './i18nConfig';
 import { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // If you already have middleware that generates a response,
-  // you can pass the response as a third argument for i18nRouter to use.
   return i18nRouter(request, i18nConfig);
 }
 

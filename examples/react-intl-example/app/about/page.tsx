@@ -1,9 +1,8 @@
-import getIntl from './intl';
+import getIntl from '../intl';
 import ServerIntlProvider from '@/components/ServerIntlProvider';
-import ExampleClientComponent from '@/components/ExampleClientComponent';
-import styles from './page.module.css';
+import BackButton from './BackButton';
+import styles from '../page.module.css';
 import LanguageChanger from '@/components/LanguageChanger';
-import Link from 'next/link';
 
 async function Home() {
   const intl = await getIntl();
@@ -11,9 +10,8 @@ async function Home() {
   return (
     <ServerIntlProvider messages={intl.messages} locale={intl.locale}>
       <main className={styles.main}>
-        <h1>{intl.formatMessage({ id: 'header' })}</h1>
-        <ExampleClientComponent />
-        <Link href="/about">{intl.formatMessage({ id: 'page2' })}</Link>
+        <h1>{intl.formatMessage({ id: 'about_header' })}</h1>
+        <BackButton />
         <LanguageChanger />
       </main>
     </ServerIntlProvider>
