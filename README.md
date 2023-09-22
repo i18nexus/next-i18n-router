@@ -123,7 +123,7 @@ This strategy enables you to use `generateStaticParams` for all locales in `layo
 import i18nConfig from '@/i18nConfig';
 
 export function generateStaticParams() {
-  return i18nConfig.locales.map(locale => { locale });
+  return i18nConfig.locales.map(locale => ({ locale }));
 }
 ...
 ```
@@ -144,21 +144,9 @@ export const config = {
 
 ## Getting the current locale
 
-The current locale can be retrieved in a Server Component using the `currentLocale` function. In a Client Component, you can use the `useCurrentLocale` hook.
+### In a Client Component:
 
-Server Component:
-
-```js
-import { currentLocale } from 'next-i18n-router';
-
-function ExampleServerComponent() {
-  const locale = currentLocale();
-
-  ...
-}
-```
-
-Client Component:
+The current locale can be retrieved in a Client Component using the `useCurrentLocale` hook:
 
 ```js
 'use client';
@@ -173,10 +161,36 @@ function ExampleClientComponent() {
 }
 ```
 
+### In a Server Component:
+
+#### If routingStrategy: "rewrite":
+
+The current locale can be retrieved in a Server Component using `currentLocale`. This function reads the current locale from a response header set by the middleware.
+
+```js
+import { currentLocale } from 'next-i18n-router';
+
+function ExampleServerComponent() {
+  const locale = currentLocale();
+
+  ...
+}
+```
+
+#### If routingStrategy: "dynamicSegment":
+
+Since Next.js does not allow SSG on pages that access response headers, you should read the current locale from the component's `params` props. Using `currentLocale` will prevent SSG.
+
+```js
+function ExampleServerComponent({ params: { locale } }) {
+  ...
+}
+```
+
 # With react-intl
 
 One of the most popular Javascript i18n libraries is `react-intl`. The `react-intl` library works great for Client Components, but with the App Router we'll have to make a few changes for usage with Server Components.
 
 For a full walkthrough on using react-intl with this library (plus automated Google Translate/DeepL integration), see [this tutorial](https://i18nexus.com/tutorials/nextjs/react-intl).
 
-You can also find an example project [here](https://github.com/i18nexus/next-i18n-router/tree/main/examples/react-intl-example).
+You can also find an example project [here](https://github.com/i18nexus/next-i18n-router/tree/main/examples).
