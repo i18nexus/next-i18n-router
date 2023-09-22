@@ -21,8 +21,10 @@ export default function LanguageChanger() {
     const expires = '; expires=' + date.toUTCString();
     document.cookie = `NEXT_LOCALE=${newLocale};expires=${expires};path=/`;
 
-    if (currentLocale === i18nConfig.defaultLocale) {
-      // condition only needed if i18nConfig.prefixDefault is false
+    if (
+      currentLocale === i18nConfig.defaultLocale &&
+      !i18nConfig.prefixDefault
+    ) {
       router.push('/' + newLocale + currentPathname);
     } else {
       router.push(
