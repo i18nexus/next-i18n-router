@@ -64,26 +64,21 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
 
     let newPath = `${locale}${pathname}`;
 
+    newPath = `${basePath}${basePathTrailingSlash ? '' : '/'}${newPath}`;
+
     if (request.nextUrl.search) {
       newPath += request.nextUrl.search;
     }
 
     // redirect to prefixed path
     if (prefixDefault || locale !== defaultLocale) {
-      return NextResponse.redirect(
-        new URL(
-          `${basePath}${basePathTrailingSlash ? '' : '/'}${newPath}`,
-          request.url
-        )
-      );
+      return NextResponse.redirect(new URL(newPath, request.url));
     }
 
     // If we get here, we're using the defaultLocale.
     // If using dynamicSegment without prefix, rewrite with content of /default
     if (routingStrategy === 'dynamicSegment' && !prefixDefault) {
-      response = NextResponse.rewrite(
-        new URL(`${basePath}${newPath}`, request.url)
-      );
+      response = NextResponse.rewrite(new URL(newPath, request.url));
     }
   } else {
     let pathWithoutLocale = pathname.slice(`/${defaultLocale}`.length) || '/';
