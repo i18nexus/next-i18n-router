@@ -1,3 +1,7 @@
+## 4.1.0
+
+- Fix bug in which rewrites did not have an opening `/`, causing pathnames with more than 2 segments to return 404's
+
 ## 4.0.0
 
 - Adds new option named `routingStrategy` that can be set to `"rewrite"` (default) or `"dynamicSegment"`.
