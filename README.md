@@ -6,9 +6,9 @@
 
 ### Why is this library needed?
 
-With the release of the App Router, internationalized routing has been removed as a built-in Next.js feature. This library adds back internationalized routing in addition to locale detection and optional cookie usage to set a user's current language.
+With the release of the App Router, internationalized routing has been removed as a built-in Next.js feature. This library adds back internationalized routing in addition to locale detection and optional cookie usage to set a user's preferred language.
 
-Unlike other implementations, wrapping all your pages in a `[locale]` path segment is optional and the default language can be accessed from the base path without a language prefix.
+This library can be used with any of the popular Javascript i18n libraries such as `react-i18next` and `react-intl`. Tutorials and examples can be found [here](#usage-with-popular-i18n-libraries).
 
 ## Installation
 
@@ -187,10 +187,20 @@ function ExampleServerComponent({ params: { locale } }) {
 }
 ```
 
-# With react-intl
+# Usage with popular i18n libraries
 
-One of the most popular Javascript i18n libraries is `react-intl`. The `react-intl` library works great for Client Components, but with the App Router we'll have to make a few changes for usage with Server Components.
+## react-i18next
 
-For a full walkthrough on using react-intl with this library (plus automated Google Translate/DeepL integration), see [this tutorial](https://i18nexus.com/tutorials/nextjs/react-intl).
+The maintainers of `i18next` recommend using `react-i18next` with the App Router instead of `next-i18next`. The popular `next-i18next` library is built specifically for the Pages Router. This means that if you are currently migrating from the Pages Router and use `next-i18next`, you will need to refactor to use `react-i18next`.
+
+For a full walkthrough on setting up `react-i18next` with `next-i18n-router` (plus Google Translate/DeepL integration), see [this tutorial](https://i18nexus.com/tutorials/nextjs/react-i18next).
+
+You can also find an example project [here](https://github.com/i18nexus/next-i18n-router/tree/main/examples/i18next-example).
+
+## react-intl
+
+The `react-intl` library works great with the App Router. But it does require a litte extra configuration for usage in Server Components.
+
+For a full walkthrough on using `react-intl` with `next-i18n-router` (plus Google Translate/DeepL integration), see [this tutorial](https://i18nexus.com/tutorials/nextjs/react-intl).
 
 You can also find an example project [here](https://github.com/i18nexus/next-i18n-router/tree/main/examples).
