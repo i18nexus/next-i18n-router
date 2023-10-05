@@ -1,3 +1,7 @@
+## 4.1.1
+
+- Minor updates to README adding instructions for setup with i18next.
+
 ## 4.1.0
 
 - Fix bug in which rewrites did not have an opening `/`, causing pathnames with more than 2 segments to return 404's
