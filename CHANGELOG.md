@@ -1,3 +1,7 @@
+## 4.1.2
+
+- Fix bug in `localeDetector` when no accept-language header present on request (https://stackoverflow.com/questions/76447732/nextjs-13-i18n-incorrect-locale-information-provided)
+
 ## 4.1.1
 
 - Minor updates to README adding instructions for setup with i18next.

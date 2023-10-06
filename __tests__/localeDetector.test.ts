@@ -45,4 +45,15 @@ describe('localeDetector', () => {
 
     expect(localeDetector(request, config)).toBe('jp');
   });
+
+  it('should fall back to default locale if no acceptLanguages', () => {
+    const request = mockRequest('/');
+
+    const config = {
+      locales: ['jp', 'zh'],
+      defaultLocale: 'jp'
+    };
+
+    expect(localeDetector(request, config)).toBe('jp');
+  });
 });
