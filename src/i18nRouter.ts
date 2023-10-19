@@ -18,8 +18,7 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     localeCookie = 'NEXT_LOCALE',
     localeDetector = defaultLocaleDetector,
     prefixDefault = false,
-    basePath = '',
-    routingStrategy = 'rewrite'
+    basePath = ''
   } = config;
 
   validateConfig(config);
@@ -76,8 +75,7 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     }
 
     // If we get here, we're using the defaultLocale.
-    // If using dynamicSegment without prefix, rewrite with content of /default
-    if (routingStrategy === 'dynamicSegment' && !prefixDefault) {
+    if (!prefixDefault) {
       response = NextResponse.rewrite(new URL(newPath, request.url));
     }
   } else {
@@ -94,16 +92,6 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     // If /default, redirect to /
     if (!prefixDefault && pathLocale === defaultLocale) {
       return NextResponse.redirect(
-        new URL(`${basePath}${pathWithoutLocale}`, request.url)
-      );
-    }
-
-    // If rewrite strategy, rewrite with content of path
-    if (
-      routingStrategy === 'rewrite' &&
-      (prefixDefault || pathLocale !== defaultLocale)
-    ) {
-      response = NextResponse.rewrite(
         new URL(`${basePath}${pathWithoutLocale}`, request.url)
       );
     }

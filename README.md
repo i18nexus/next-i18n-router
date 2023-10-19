@@ -18,6 +18,15 @@ npm install next-i18n-router
 
 ## Example Usage
 
+First, nest all pages and layouts inside of a dynamic segment named `[locale]`:
+
+```
+└── app
+    └── [locale]
+        ├── layout.js
+        └── page.js
+```
+
 Create a file called `i18nConfig.js` at the root of your project to store your config:
 
 ```js
@@ -49,15 +58,14 @@ You now have internationalized routing!
 
 ## Config Options
 
-| Option            | Default value   | Type                          | Required? |
-| ----------------- | --------------- | ----------------------------- | --------- |
-| `locales`         |                 | string[]                      | &#10004;  |
-| `defaultLocale`   |                 | string                        | &#10004;  |
-| `prefixDefault`   | `false`         | boolean                       |           |
-| `localeDetector`  | (See below)     | function \| false             |           |
-| `localeCookie`    | `'NEXT_LOCALE'` | string                        |           |
-| `routingStrategy` | 'rewrite'       | 'rewrite' \| 'dynamicSegment' |           |
-| `basePath`        | `''`            | string                        |           |
+| Option           | Default value   | Type              | Required? |
+| ---------------- | --------------- | ----------------- | --------- |
+| `locales`        |                 | string[]          | &#10004;  |
+| `defaultLocale`  |                 | string            | &#10004;  |
+| `prefixDefault`  | `false`         | boolean           |           |
+| `localeDetector` | (See below)     | function \| false |           |
+| `localeCookie`   | `'NEXT_LOCALE'` | string            |           |
+| `basePath`       | `''`            | string            |           |
 
 ## Locale Path Prefixing
 
@@ -100,36 +108,6 @@ You can override the `localeDetector` using the `NEXT_LOCALE=the-locale` cookie.
 
 If you would prefer to use a different cookie key other than `NEXT_LOCALE`, you can set the `localeCookie` option.
 
-## Choosing the `routingStrategy` (optional)
-
-By default, this library uses rewrites to add the current locale to the pathname. This is a convenient developer experience, but it means that you cannot run `generateStaticParams` to generate pages for all languages at build time.
-
-To do this, you can set `routingStrategy` to `'dynamicSegment'`. This strategy requires you to add a dynamic segment folder to wrap all pages and layouts in your `app` directory:
-
-```
-├── middleware.js
-└── app
-    └── [locale]
-        ├── layout.js
-        └── page.js
-```
-
-This example is using `[locale]` as the dynamic segment, but it can be named whatever you want.
-
-This strategy enables you to use `generateStaticParams` for all locales in `layout.js`:
-
-```js
-...
-import i18nConfig from '@/i18nConfig';
-
-export function generateStaticParams() {
-  return i18nConfig.locales.map(locale => ({ locale }));
-}
-...
-```
-
-That's it! Everything else works the same.
-
 ## Using `basePath` (optional)
 
 This is only needed if you are using the `basePath` option in `next.config.js`. You will need to also include it as the `basePath` option in your `i18nConfig`.
@@ -163,23 +141,7 @@ function ExampleClientComponent() {
 
 ### In a Server Component:
 
-#### If routingStrategy: "rewrite":
-
-The current locale can be retrieved in a Server Component using `currentLocale`. This function reads the current locale from a response header set by the middleware.
-
-```js
-import { currentLocale } from 'next-i18n-router';
-
-function ExampleServerComponent() {
-  const locale = currentLocale();
-
-  ...
-}
-```
-
-#### If routingStrategy: "dynamicSegment":
-
-Since Next.js does not allow SSG on pages that access response headers, you should read the current locale from the component's `params` props. Using `currentLocale` will prevent SSG.
+The current locale should be accessed from the component's `params` props:
 
 ```js
 function ExampleServerComponent({ params: { locale } }) {
@@ -203,4 +165,4 @@ The `react-intl` library works great with the App Router. But it does require a 
 
 For a full walkthrough on using `react-intl` with `next-i18n-router` (plus Google Translate/DeepL integration), see [this tutorial](https://i18nexus.com/tutorials/nextjs/react-intl).
 
-You can also find an example project [here](https://github.com/i18nexus/next-i18n-router/tree/main/examples).
+You can also find an example project [here](https://github.com/i18nexus/next-i18n-router/tree/main/examples/react-intl-example).
