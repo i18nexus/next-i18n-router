@@ -1,3 +1,7 @@
+## 5.0.1
+
+Update examples to v5 and update changelog
+
 ## 5.0.0
 
 To encourage best practices, we have removed the `'rewrite'` routing strategy and require use of a dynamic segment.
