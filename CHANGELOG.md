@@ -1,3 +1,15 @@
+## 5.0.0
+
+To encourage best practices, we have removed the `'rewrite'` routing strategy and require use of a dynamic segment.
+
+### Breaking Changes
+
+If you are currently using `routingStrategy: 'dynamicSegment'`, no changes are required aside from removing the `routingStrategy` option from your config.
+
+- `routingStrategy` config option removed
+- Dynamic segment for the path locale now required
+- Removed `currentLocale` helper function. This function used a header set in the middleware to get the current locale, but this was undependable due to middleware response caching. Reading headers in server components also disables use of SSG. To get the current locale in server components, you can now just use the page params.
+
 ## 4.1.2
 
 - Fix bug in `localeDetector` when no accept-language header present on request (https://stackoverflow.com/questions/76447732/nextjs-13-i18n-incorrect-locale-information-provided)
