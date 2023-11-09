@@ -1,46 +1,28 @@
 'use client';
 
 import { I18nextProvider } from 'react-i18next';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useMemo } from 'react';
 import initTranslations from '@/app/i18n';
-import { i18n as i18nInterface } from 'i18next';
-
-let i18n: i18nInterface;
+import { Resource, createInstance } from 'i18next';
 
 export default function TranslationsProvider({
   children,
   locale,
-  namespaces
+  namespaces,
+  resources
 }: {
   children: ReactNode;
   locale: string;
   namespaces: string[];
+  resources: Resource;
 }) {
-  const [instance, setInstance] = useState(i18n);
+  const i18n = useMemo(() => {
+    const instance = createInstance();
 
-  useEffect(() => {
-    const init = async () => {
-      if (!i18n) {
-        const newInstance = await initTranslations(locale, namespaces);
-        i18n = newInstance;
-        setInstance(newInstance);
-      } else {
-        if (i18n.language !== locale) {
-          i18n.changeLanguage(locale);
-        }
-      }
-    };
+    initTranslations(locale, namespaces, instance, resources);
 
-    init();
-  }, [locale, namespaces]);
+    return instance;
+  }, [locale, namespaces, resources]);
 
-  if (!instance) {
-    return null;
-  }
-
-  return (
-    <I18nextProvider i18n={instance} defaultNS={namespaces[0]}>
-      {children}
-    </I18nextProvider>
-  );
+  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
 }
