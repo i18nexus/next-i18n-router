@@ -1,3 +1,7 @@
+## 5.0.2
+
+Fixes RangeError thrown by `@formatjs/intl-localematcher` when an invalid accept-language header is present on request
+
 ## 5.0.1
 
 Update examples to v5 and update changelog
