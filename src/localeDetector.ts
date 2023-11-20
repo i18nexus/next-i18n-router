@@ -10,13 +10,16 @@ function localeDetector(request: NextRequest, config: Config): string {
 
   const languages = new Negotiator({ headers: negotiatorHeaders }).languages();
 
-  // in case of no accept-language header
+  // match can only use specifically formatted locales
   // https://stackoverflow.com/questions/76447732/nextjs-13-i18n-incorrect-locale-information-provided
-  if (!languages || (languages.length === 1 && languages[0] === '*')) {
+  try {
+    return match(languages, config.locales, config.defaultLocale);
+  } catch (e) {
+    console.warn(`No valid locales in accept-language header: ${languages}`);
+    console.warn(`Reverting to using defaultLocale: ${config.defaultLocale}`);
+
     return config.defaultLocale;
   }
-
-  return match(languages, config.locales, config.defaultLocale);
 }
 
 export default localeDetector;

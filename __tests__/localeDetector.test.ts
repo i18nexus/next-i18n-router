@@ -56,4 +56,15 @@ describe('localeDetector', () => {
 
     expect(localeDetector(request, config)).toBe('jp');
   });
+
+  it('should not throw error with invalid acceptLanguages', () => {
+    const request = mockRequest('/', ['asdfsadf', '*']);
+
+    const config = {
+      locales: ['jp', 'zh'],
+      defaultLocale: 'jp'
+    };
+
+    expect(localeDetector(request, config)).toBe('jp');
+  });
 });
