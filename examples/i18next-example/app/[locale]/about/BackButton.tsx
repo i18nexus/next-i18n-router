@@ -6,5 +6,9 @@ import { useTranslation } from 'react-i18next';
 export default function BackButton() {
   const { t } = useTranslation();
 
-  return <Link href="/">{t('back')}</Link>;
+  return (
+    <Link href="/">
+      {t('back')} {t('test:test')}
+    </Link>
+  );
 }

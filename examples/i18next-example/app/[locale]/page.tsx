@@ -8,10 +8,13 @@ import TranslationsProvider from '@/components/TranslationsProvider';
 const i18nNamespaces = ['home'];
 
 async function Home({ params: { locale } }: { params: { locale: string } }) {
-  const { t } = await initTranslations(locale, i18nNamespaces);
+  const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
   return (
-    <TranslationsProvider namespaces={i18nNamespaces} locale={locale}>
+    <TranslationsProvider
+      namespaces={i18nNamespaces}
+      locale={locale}
+      resources={resources}>
       <main className={styles.main}>
         <h1>{t('header')}</h1>
         <ExampleClientComponent />
