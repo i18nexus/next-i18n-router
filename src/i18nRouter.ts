@@ -28,6 +28,12 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
   const pathname = request.nextUrl.pathname;
   const basePathTrailingSlash = basePath.endsWith('/');
 
+  const responseOptions = {
+    request: {
+      headers: new Headers(request.headers)
+    }
+  };
+
   const pathLocale = locales.find(
     locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
@@ -76,7 +82,10 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
 
     // If we get here, we're using the defaultLocale.
     if (!prefixDefault) {
-      response = NextResponse.rewrite(new URL(newPath, request.url));
+      response = NextResponse.rewrite(
+        new URL(newPath, request.url),
+        responseOptions
+      );
     }
   } else {
     let pathWithoutLocale = pathname.slice(`/${defaultLocale}`.length) || '/';
@@ -98,7 +107,7 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
   }
 
   if (!response) {
-    response = NextResponse.next();
+    response = NextResponse.next(responseOptions);
   }
 
   response.headers.set(

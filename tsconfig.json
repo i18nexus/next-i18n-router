@@ -2,13 +2,16 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "commonjs",
-    "lib": ["esnext", "dom"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "declaration": true
+    "declaration": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "noEmit": true,
   },
   "include": ["src/*.ts", "src/client/*.ts"],
   "exclude": ["node_modules"]

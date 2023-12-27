@@ -11,30 +11,12 @@ export default function mockRequest(
     mockHeaders['accept-language'] = acceptLanguages.join(',') + ';q=0.9';
   }
 
-  const request: NextRequest = {
-    // @ts-ignore
-    nextUrl: { pathname },
-    // @ts-ignore
-    headers: {
-      ...mockHeaders,
-      forEach: function (callback: Function) {
-        const _this: { [key: string]: any } = this;
+  const url = 'https://example.com' + pathname;
 
-        for (const name in this) {
-          const value: any = _this[name];
+  const headers = new Headers({
+    ...mockHeaders,
+    cookie: `NEXT_LOCALE=${cookie}`
+  });
 
-          if (typeof value !== 'function') {
-            callback(value, name, this);
-          }
-        }
-      }
-    },
-    url: 'https://example.com/',
-    // @ts-ignore
-    cookies: {
-      get: jest.fn().mockReturnValue(cookie ? { value: cookie } : undefined)
-    }
-  };
-
-  return request;
+  return new NextRequest(url, { headers });
 }
