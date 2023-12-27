@@ -1,3 +1,7 @@
+## 5.1.0
+
+Add forwarding of request headers in `i18nRouter`
+
 ## 5.0.2
 
 Fixes RangeError thrown by `@formatjs/intl-localematcher` when an invalid accept-language header is present on request
