@@ -127,7 +127,7 @@ basePaths.forEach(basePath => {
     });
 
     it('should redirect to the base path when prefixed with default and prefixDefault is false', () => {
-      const mockRedirect = jest.fn();
+      const mockRedirect = jest.fn().mockReturnValue(new NextResponse());
       NextResponse.redirect = mockRedirect;
 
       const request = mockRequest('/en/faq', ['en']);
@@ -235,6 +235,91 @@ basePaths.forEach(basePath => {
       expect(mockRedirect).toHaveBeenCalledWith(
         new URL(`${basePath}/jp/faq`, 'https://example.com')
       );
+    });
+
+    it('should use cookie when cookie is different from path locale', () => {
+      const mockRedirect = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.redirect = mockRedirect;
+
+      const request = mockRequest('/de/faq', ['en'], 'jp');
+
+      i18nRouter(request, {
+        locales: ['en', 'de', 'jp'],
+        defaultLocale: 'en',
+        basePath
+      });
+
+      expect(mockRedirect).toHaveBeenCalledWith(
+        new URL(`${basePath}/jp/faq`, 'https://example.com')
+      );
+    });
+
+    it('should not redirect when serverSetCookie is always', () => {
+      const mockRedirect = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.redirect = mockRedirect;
+
+      const request = mockRequest('/de/faq', ['en'], 'jp');
+
+      i18nRouter(request, {
+        locales: ['en', 'de', 'jp'],
+        defaultLocale: 'en',
+        basePath,
+        serverSetCookie: 'always'
+      });
+
+      expect(mockRedirect).toHaveBeenCalledTimes(0);
+    });
+
+    it('should redirect to no locale when default locale in bath and serverSetCookie is always', () => {
+      const mockRedirect = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.redirect = mockRedirect;
+
+      const request = mockRequest('/en/faq', ['en'], 'jp');
+
+      i18nRouter(request, {
+        locales: ['en', 'de', 'jp'],
+        defaultLocale: 'en',
+        basePath,
+        serverSetCookie: 'always'
+      });
+
+      expect(mockRedirect).toHaveBeenCalledWith(
+        new URL(`${basePath}/faq`, 'https://example.com')
+      );
+    });
+
+    it('should redirect when has cookie and serverSetCookie is if-empty', () => {
+      const mockRedirect = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.redirect = mockRedirect;
+
+      const request = mockRequest('/de/faq', ['en'], 'jp');
+
+      i18nRouter(request, {
+        locales: ['en', 'de', 'jp'],
+        defaultLocale: 'en',
+        basePath,
+        serverSetCookie: 'if-empty'
+      });
+
+      expect(mockRedirect).toHaveBeenCalledWith(
+        new URL(`${basePath}/jp/faq`, 'https://example.com')
+      );
+    });
+
+    it('should not redirect to no cookie and serverSetCookie is if-empty', () => {
+      const mockRedirect = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.redirect = mockRedirect;
+
+      const request = mockRequest('/de/faq', ['en']);
+
+      i18nRouter(request, {
+        locales: ['en', 'de', 'jp'],
+        defaultLocale: 'en',
+        basePath,
+        serverSetCookie: 'if-empty'
+      });
+
+      expect(mockRedirect).toHaveBeenCalledTimes(0);
     });
   });
 });

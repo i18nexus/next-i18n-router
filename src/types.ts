@@ -7,4 +7,5 @@ export interface Config {
   localeDetector?: ((request: NextRequest, config: Config) => string) | false;
   prefixDefault?: boolean;
   basePath?: string;
+  serverSetCookie?: 'if-empty' | 'always';
 }

@@ -10,8 +10,7 @@
     "sourceMap": true,
     "declaration": true,
     "allowJs": true,
-    "skipLibCheck": true,
-    "noEmit": true,
+    "skipLibCheck": true
   },
   "include": ["src/*.ts", "src/client/*.ts"],
   "exclude": ["node_modules"]

@@ -18,12 +18,11 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     localeCookie = 'NEXT_LOCALE',
     localeDetector = defaultLocaleDetector,
     prefixDefault = false,
-    basePath = ''
+    basePath = '',
+    serverSetCookie
   } = config;
 
   validateConfig(config);
-
-  let response;
 
   const pathname = request.nextUrl.pathname;
   const basePathTrailingSlash = basePath.endsWith('/');
@@ -34,21 +33,24 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     }
   };
 
+  let response = NextResponse.next(responseOptions);
+
   const pathLocale = locales.find(
     locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  if (!pathLocale) {
-    let locale;
+  let cookieLocale;
+  // check cookie for locale
+  if (localeCookie) {
+    const cookieValue = request.cookies.get(localeCookie)?.value;
 
-    // check cookie for locale
-    if (localeCookie) {
-      const cookieValue = request.cookies.get(localeCookie)?.value;
-
-      if (cookieValue && config.locales.includes(cookieValue)) {
-        locale = cookieValue;
-      }
+    if (cookieValue && config.locales.includes(cookieValue)) {
+      cookieLocale = cookieValue;
     }
+  }
+
+  if (!pathLocale) {
+    let locale = cookieLocale;
 
     // if no cookie, detect locale with localeDetector
     if (!locale) {
@@ -88,26 +90,61 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
       );
     }
   } else {
-    let pathWithoutLocale = pathname.slice(`/${defaultLocale}`.length) || '/';
+    if (cookieLocale && cookieLocale !== pathLocale) {
+      // if always, do not redirect to cookieLocale
+      if (serverSetCookie !== 'always') {
+        let newPath = pathname.replace(`/${pathLocale}`, `/${cookieLocale}`);
 
-    if (basePathTrailingSlash) {
-      pathWithoutLocale = pathWithoutLocale.slice(1);
-    }
+        if (request.nextUrl.search) {
+          newPath += request.nextUrl.search;
+        }
 
-    if (request.nextUrl.search) {
-      pathWithoutLocale += request.nextUrl.search;
+        if (basePathTrailingSlash) {
+          newPath = newPath.slice(1);
+        }
+
+        newPath = `${basePath}${newPath}`;
+
+        response = NextResponse.redirect(new URL(newPath, request.url));
+      }
     }
 
     // If /default, redirect to /
     if (!prefixDefault && pathLocale === defaultLocale) {
-      return NextResponse.redirect(
+      let pathWithoutLocale = pathname.slice(`/${pathLocale}`.length) || '/';
+
+      if (basePathTrailingSlash) {
+        pathWithoutLocale = pathWithoutLocale.slice(1);
+      }
+
+      if (request.nextUrl.search) {
+        pathWithoutLocale += request.nextUrl.search;
+      }
+
+      response = NextResponse.redirect(
         new URL(`${basePath}${pathWithoutLocale}`, request.url)
       );
     }
-  }
 
-  if (!response) {
-    response = NextResponse.next(responseOptions);
+    const setCookie = () => {
+      response.cookies.set(localeCookie, pathLocale, {
+        path: request.nextUrl.basePath || undefined,
+        sameSite: 'strict',
+        maxAge: 31536000 // expires after one year
+      });
+    };
+
+    if (serverSetCookie) {
+      if (
+        cookieLocale &&
+        cookieLocale !== pathLocale &&
+        serverSetCookie === 'always'
+      ) {
+        setCookie();
+      } else if (!cookieLocale) {
+        setCookie();
+      }
+    }
   }
 
   response.headers.set(
