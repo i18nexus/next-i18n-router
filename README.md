@@ -113,7 +113,7 @@ If you would prefer to use a different cookie key other than `NEXT_LOCALE`, you 
 
 The `serverSetCookie` option automatically changes a visitor's preferred locale cookie by simply visiting a pathname that contains a locale.
 
-`'always`: When the pathname of a request includes a locale, that locale will be set as the cookie by the middleware. This means that locale detection and any existing locale cookie will be ignored if a locale exists in the request's pathname. Locale detection and the reading of any existing cookie will still be run on pathnames that do not include a locale.
+`'always'`: When the pathname of a request includes a locale, that locale will be set as the cookie by the middleware. This means that locale detection and any existing locale cookie will be ignored if a locale exists in the request's pathname. Locale detection and the reading of any existing cookie will still be run on pathnames that do not include a locale.
 
 `'if-empty'`: Same as `'always'`, except the middleware will not overwrite the cookie if one already exists.
 
