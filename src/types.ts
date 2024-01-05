@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 
 export interface Config {
-  locales: string[];
+  locales: readonly string[];
   defaultLocale: string;
   localeCookie?: string;
   localeDetector?: ((request: NextRequest, config: Config) => string) | false;
