@@ -58,14 +58,15 @@ You now have internationalized routing!
 
 ## Config Options
 
-| Option           | Default value   | Type              | Required? |
-| ---------------- | --------------- | ----------------- | --------- |
-| `locales`        |                 | string[]          | &#10004;  |
-| `defaultLocale`  |                 | string            | &#10004;  |
-| `prefixDefault`  | `false`         | boolean           |           |
-| `localeDetector` | (See below)     | function \| false |           |
-| `localeCookie`   | `'NEXT_LOCALE'` | string            |           |
-| `basePath`       | `''`            | string            |           |
+| Option            | Default value   | Type                   | Required? |
+| ----------------- | --------------- | ---------------------- | --------- |
+| `locales`         |                 | string[]               | &#10004;  |
+| `defaultLocale`   |                 | string                 | &#10004;  |
+| `prefixDefault`   | `false`         | boolean                |           |
+| `localeDetector`  | (See below)     | function \| false      |           |
+| `localeCookie`    | `'NEXT_LOCALE'` | string                 |           |
+| `serverSetCookie` |                 | "always" \| "if-empty" |           |
+| `basePath`        | `''`            | string                 |           |
 
 ## Locale Path Prefixing
 
@@ -107,6 +108,16 @@ You can also set the `localeDetector` option to `false` if you wish to opt out o
 You can override the `localeDetector` using the `NEXT_LOCALE=the-locale` cookie. For example, you can set this cookie when a user opts to change to a different language. When they return to your site, their preferred language will already be set.
 
 If you would prefer to use a different cookie key other than `NEXT_LOCALE`, you can set the `localeCookie` option.
+
+### serverSetCookie (optional)
+
+The `serverSetCookie` option automatically changes a visitor's preferred locale cookie by simply visiting a pathname that contains a locale.
+
+`'always`: When the pathname of a request includes a locale, that locale will be set as the cookie by the middleware. This means that locale detection and any existing locale cookie will be ignored if a locale exists in the request's pathname. Locale detection and the reading of any existing cookie will still be run on pathnames that do not include a locale.
+
+`'if-empty'`: Same as `'always'`, except the middleware will not overwrite the cookie if one already exists.
+
+`undefined` (default): When `serverSetCookie` is not set, the middleware will not automatically set the cookie.
 
 ## Using `basePath` (optional)
 
