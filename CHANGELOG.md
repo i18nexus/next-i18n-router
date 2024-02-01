@@ -1,3 +1,7 @@
+## 5.2.1
+
+- Update dependencies
+
 ## 5.2.0
 
 - Change to cookie redirect behavior: When visiting a pathname that includes a locale, the middleware will now redirect if the `localeCookie` is set. Previously the redirecting based on cookie only occured on pathnames without a locale, but we've decided this is inconsistent behavior.
