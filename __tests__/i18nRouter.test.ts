@@ -10,7 +10,8 @@ basePaths.forEach(basePath => {
       const config = {
         locales: 'invalid',
         defaultLocale: 'en-US',
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       };
 
       // @ts-ignore
@@ -20,7 +21,7 @@ basePaths.forEach(basePath => {
     });
 
     it('should throw an error if defaultLocale is not defined', () => {
-      const config = { locales: ['en-US'], basePath };
+      const config = { locales: ['en-US'], basePath, serverSetCookie: 'never' };
 
       // @ts-ignore
       expect(() => i18nRouter(mockRequest('/', ['en']), config)).toThrow(
@@ -29,14 +30,14 @@ basePaths.forEach(basePath => {
     });
 
     it('should throw an error if defaultLocale is not in locales array', () => {
-      const config = {
-        locales: ['en-US'],
-        defaultLocale: 'invalid',
-        basePath
-      };
-      expect(() => i18nRouter(mockRequest('/', ['en']), config)).toThrow(
-        /defaultLocale/
-      );
+      expect(() =>
+        i18nRouter(mockRequest('/', ['en']), {
+          locales: ['en-US'],
+          defaultLocale: 'invalid',
+          basePath,
+          serverSetCookie: 'never'
+        })
+      ).toThrow(/defaultLocale/);
     });
 
     it('should throw an error if localeDetector is not a function', () => {
@@ -44,13 +45,20 @@ basePaths.forEach(basePath => {
         locales: ['en-US'],
         defaultLocale: 'en-US',
         localeDetector: 'invalid',
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       };
 
-      // @ts-ignore
-      expect(() => i18nRouter(mockRequest('/', ['en']), config)).toThrow(
-        /localeDetector/
-      );
+      expect(() =>
+        i18nRouter(mockRequest('/', ['en']), {
+          locales: ['en-US'],
+          defaultLocale: 'en-US',
+          // @ts-ignore
+          localeDetector: 'invalid',
+          basePath,
+          serverSetCookie: 'never'
+        })
+      ).toThrow(/localeDetector/);
     });
 
     it('should throw an error if request argument is missing', () => {
@@ -67,7 +75,8 @@ basePaths.forEach(basePath => {
       i18nRouter(request, {
         locales: ['en', 'jp'],
         defaultLocale: 'en',
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       });
 
       expect(mockRedirect).toHaveBeenCalledTimes(0);
@@ -83,7 +92,8 @@ basePaths.forEach(basePath => {
         locales: ['en', 'jp'],
         defaultLocale: 'en',
         prefixDefault: true,
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       });
 
       expect(mockRedirect).toHaveBeenCalledWith(
@@ -100,7 +110,8 @@ basePaths.forEach(basePath => {
       i18nRouter(request, {
         locales: ['en', 'jp'],
         defaultLocale: 'en',
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       });
 
       expect(mockRedirect).toHaveBeenCalledWith(
@@ -118,7 +129,8 @@ basePaths.forEach(basePath => {
         locales: ['en', 'jp'],
         defaultLocale: 'en',
         prefixDefault: true,
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       });
 
       expect(mockRedirect).toHaveBeenCalledWith(
@@ -135,7 +147,8 @@ basePaths.forEach(basePath => {
       i18nRouter(request, {
         locales: ['en', 'jp'],
         defaultLocale: 'en',
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       });
 
       expect(mockRedirect).toHaveBeenCalledWith(
@@ -152,7 +165,8 @@ basePaths.forEach(basePath => {
       i18nRouter(request, {
         locales: ['en', 'jp'],
         defaultLocale: 'en',
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       });
 
       expect(mockRedirect).toHaveBeenCalledTimes(0);
@@ -167,7 +181,8 @@ basePaths.forEach(basePath => {
       i18nRouter(request, {
         locales: ['en', 'jp'],
         defaultLocale: 'en',
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       });
 
       expect(mockRedirect).toHaveBeenCalledTimes(0);
@@ -182,7 +197,8 @@ basePaths.forEach(basePath => {
       i18nRouter(request, {
         locales: ['en', 'jp'],
         defaultLocale: 'en',
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       });
 
       expect(mockRedirect).toHaveBeenCalledWith(
@@ -199,7 +215,8 @@ basePaths.forEach(basePath => {
       i18nRouter(request, {
         locales: ['en', 'jp'],
         defaultLocale: 'en',
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       });
 
       expect(mockRedirect).toHaveBeenCalledTimes(0);
@@ -214,7 +231,8 @@ basePaths.forEach(basePath => {
       i18nRouter(request, {
         locales: ['en', 'jp'],
         defaultLocale: 'en',
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       });
 
       expect(mockRedirect).toHaveBeenCalledTimes(0);
@@ -229,7 +247,8 @@ basePaths.forEach(basePath => {
       i18nRouter(request, {
         locales: ['en', 'jp'],
         defaultLocale: 'en',
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       });
 
       expect(mockRedirect).toHaveBeenCalledWith(
@@ -246,7 +265,8 @@ basePaths.forEach(basePath => {
       i18nRouter(request, {
         locales: ['en', 'de', 'jp'],
         defaultLocale: 'en',
-        basePath
+        basePath,
+        serverSetCookie: 'never'
       });
 
       expect(mockRedirect).toHaveBeenCalledWith(

@@ -1,3 +1,8 @@
+## 5.3.0
+
+- Change default of `serverSetCookie` to `"always"`.
+- Add `"never"` option to `serverSetCookie`. This is the same as `undefined` in previous versions.
+
 ## 5.2.1
 
 - Update dependencies

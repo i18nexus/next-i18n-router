@@ -19,7 +19,7 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     localeDetector = defaultLocaleDetector,
     prefixDefault = false,
     basePath = '',
-    serverSetCookie
+    serverSetCookie = 'always'
   } = config;
 
   validateConfig(config);
@@ -134,7 +134,7 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
       });
     };
 
-    if (serverSetCookie) {
+    if (serverSetCookie !== 'never') {
       if (
         cookieLocale &&
         cookieLocale !== pathLocale &&
