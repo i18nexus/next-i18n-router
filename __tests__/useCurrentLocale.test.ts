@@ -72,5 +72,33 @@ basePaths.forEach(basePath => {
 
       expect(useCurrentLocale(config)).toEqual(undefined);
     });
+
+    it('should return cookie locale when noPrefix is true and cookie set', () => {
+      pathname = `/products/2`;
+
+      const config = {
+        defaultLocale: 'en',
+        locales: ['en', 'de'],
+        noPrefix: true,
+        basePath
+      };
+
+      expect(
+        useCurrentLocale(config, 'random_cookie=sdf; NEXT_LOCALE=de')
+      ).toEqual('de');
+    });
+
+    it('should return defaultLocale when noPrefix is true and no cookie set', () => {
+      pathname = `/products/2`;
+
+      const config = {
+        defaultLocale: 'en',
+        locales: ['en', 'de'],
+        noPrefix: true,
+        basePath
+      };
+
+      expect(useCurrentLocale(config, 'random_cookie=sdf')).toEqual('en');
+    });
   });
 });

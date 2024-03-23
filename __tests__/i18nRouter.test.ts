@@ -341,5 +341,28 @@ basePaths.forEach(basePath => {
 
       expect(mockRedirect).toHaveBeenCalledTimes(0);
     });
+
+    it('should not redirect when noPrefix is true', () => {
+      const mockRedirect = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.redirect = mockRedirect;
+
+      const mockRewrite = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.rewrite = mockRewrite;
+
+      const request = mockRequest('/faq', ['en'], 'jp');
+
+      i18nRouter(request, {
+        locales: ['en', 'de', 'jp'],
+        defaultLocale: 'en',
+        basePath,
+        noPrefix: true
+      });
+
+      expect(mockRedirect).toHaveBeenCalledTimes(0);
+      expect(mockRewrite).toHaveBeenCalledTimes(1);
+      expect(mockRewrite.mock.calls[0][0]).toEqual(
+        new URL(`${basePath}/jp/faq`, 'https://example.com/faq')
+      );
+    });
   });
 });

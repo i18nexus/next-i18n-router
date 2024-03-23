@@ -19,7 +19,8 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     localeDetector = defaultLocaleDetector,
     prefixDefault = false,
     basePath = '',
-    serverSetCookie = 'always'
+    serverSetCookie = 'always',
+    noPrefix = false
   } = config;
 
   validateConfig(config);
@@ -35,10 +36,6 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
 
   let response = NextResponse.next(responseOptions);
 
-  const pathLocale = locales.find(
-    locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  );
-
   let cookieLocale;
   // check cookie for locale
   if (localeCookie) {
@@ -48,6 +45,31 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
       cookieLocale = cookieValue;
     }
   }
+
+  if (noPrefix) {
+    let locale = cookieLocale || defaultLocale;
+
+    let newPath = `${locale}${pathname}`;
+
+    newPath = `${basePath}${basePathTrailingSlash ? '' : '/'}${newPath}`;
+
+    if (request.nextUrl.search) {
+      newPath += request.nextUrl.search;
+    }
+
+    response = NextResponse.rewrite(
+      new URL(newPath, request.url),
+      responseOptions
+    );
+
+    response.headers.set('x-next-i18n-router-locale', locale);
+
+    return response;
+  }
+
+  const pathLocale = locales.find(
+    locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  );
 
   if (!pathLocale) {
     let locale = cookieLocale;

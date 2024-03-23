@@ -65,6 +65,7 @@ You now have internationalized routing!
 | `prefixDefault`   | `false`         | boolean                           |           |
 | `localeDetector`  | (See below)     | function \| false                 |           |
 | `localeCookie`    | `'NEXT_LOCALE'` | string                            |           |
+| `noPrefix`        | `false`         | boolean                           |           |
 | `serverSetCookie` | `'always'`      | "always" \| "if-empty" \| "never" |           |
 | `basePath`        | `''`            | string                            |           |
 
@@ -76,7 +77,9 @@ By default, the `defaultLocale`'s path is not prefixed with the locale. For exam
 
 **German**: `/de/products`
 
-To include your default language in the path, set the `prefixDefault` config option to `true`.
+To also include your default locale in the path, set the `prefixDefault` config option to `true`.
+
+To hide all locales from the path, set the `noPrefix` config option to `true`.
 
 ## Locale Detection
 
@@ -118,6 +121,8 @@ The `serverSetCookie` option automatically changes a visitor's preferred locale 
 `'if-empty'`: Same as `'always'`, except the middleware will not overwrite the cookie if one already exists.
 
 `'never'`: The middleware will not automatically set the cookie.
+
+If you are using `noPrefix`, the `serverSetCookie` option does not do anything since there is no locale in the pathname to read from. All language changing must be done by setting the cookie manually.
 
 ## Using `basePath` (optional)
 

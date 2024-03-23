@@ -1,3 +1,8 @@
+## 5.4.0
+
+- Add config option `noPrefix` for hiding the locale prefix in the pathname.
+- `useCurrentLocale` now checks the document cookie for the current locale prior to checking the pathname.
+
 ## 5.3.0
 
 - Change default of `serverSetCookie` to `"always"`.
