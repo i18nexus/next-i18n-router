@@ -1,6 +1,6 @@
 {
   "name": "next-i18n-router",
-  "version": "5.4.0",
+  "version": "5.4.1",
   "description": "Next.js App Router internationalized routing and locale detection.",
   "repository": "https://github.com/i18nexus/next-i18n-router",
   "keywords": [
@@ -37,7 +37,7 @@
     "eslint-config-next": "^14.1.0",
     "eslint-plugin-jest": "^27.6.3",
     "jest": "^29.5.0",
-    "next": "^14.1.0",
+    "next": "^14.2.2",
     "react": "^18.2.0",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.1",

@@ -1,3 +1,7 @@
+## 5.4.1
+
+- Update `next` dev dependency to 14.2.2
+
 ## 5.4.0
 
 - Add config option `noPrefix` for hiding the locale prefix in the pathname.
