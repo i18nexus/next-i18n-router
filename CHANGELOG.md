@@ -1,3 +1,7 @@
+## 5.4.2
+
+- Fixes bug where `noPrefix` did not use `localeDetector` when no cookie present
+
 ## 5.4.1
 
 - Update `next` dev dependency to 14.2.2

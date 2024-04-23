@@ -349,7 +349,7 @@ basePaths.forEach(basePath => {
       const mockRewrite = jest.fn().mockReturnValue(new NextResponse());
       NextResponse.rewrite = mockRewrite;
 
-      const request = mockRequest('/faq', ['en'], 'jp');
+      const request = mockRequest('/faq', ['zh']);
 
       i18nRouter(request, {
         locales: ['en', 'de', 'jp'],
@@ -360,8 +360,44 @@ basePaths.forEach(basePath => {
 
       expect(mockRedirect).toHaveBeenCalledTimes(0);
       expect(mockRewrite).toHaveBeenCalledTimes(1);
-      expect(mockRewrite.mock.calls[0][0]).toEqual(
-        new URL(`${basePath}/jp/faq`, 'https://example.com/faq')
+      expect(mockRewrite.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/en/faq`, 'https://example.com/faq').href
+      );
+    });
+
+    it('should use cookie when noPrefix is true', () => {
+      const mockRewrite = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.rewrite = mockRewrite;
+
+      const request = mockRequest('/faq', ['en'], 'jp');
+
+      i18nRouter(request, {
+        locales: ['en', 'de', 'jp'],
+        defaultLocale: 'en',
+        basePath,
+        noPrefix: true
+      });
+
+      expect(mockRewrite.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/jp/faq`, 'https://example.com/faq').href
+      );
+    });
+
+    it('should use localeDetector when noPrefix is true and no cookie', () => {
+      const request = mockRequest('/faq', ['de']);
+
+      const mockRewrite = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.rewrite = mockRewrite;
+
+      i18nRouter(request, {
+        locales: ['en', 'de', 'jp'],
+        defaultLocale: 'en',
+        basePath,
+        noPrefix: true
+      });
+
+      expect(mockRewrite.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/de/faq`, 'https://example.com/faq').href
       );
     });
   });

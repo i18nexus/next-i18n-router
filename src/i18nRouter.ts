@@ -46,30 +46,12 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     }
   }
 
-  if (noPrefix) {
-    let locale = cookieLocale || defaultLocale;
-
-    let newPath = `${locale}${pathname}`;
-
-    newPath = `${basePath}${basePathTrailingSlash ? '' : '/'}${newPath}`;
-
-    if (request.nextUrl.search) {
-      newPath += request.nextUrl.search;
-    }
-
-    response = NextResponse.rewrite(
-      new URL(newPath, request.url),
-      responseOptions
-    );
-
-    response.headers.set('x-next-i18n-router-locale', locale);
-
-    return response;
-  }
-
-  const pathLocale = locales.find(
-    locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  );
+  const pathLocale = noPrefix
+    ? undefined
+    : locales.find(
+        locale =>
+          pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+      );
 
   if (!pathLocale) {
     let locale = cookieLocale;
@@ -99,13 +81,15 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
       newPath += request.nextUrl.search;
     }
 
-    // redirect to prefixed path
-    if (prefixDefault || locale !== defaultLocale) {
+    if (noPrefix) {
+      response = NextResponse.rewrite(
+        new URL(newPath, request.url),
+        responseOptions
+      );
+    } else if (prefixDefault || locale !== defaultLocale) {
       return NextResponse.redirect(new URL(newPath, request.url));
-    }
-
-    // If we get here, we're using the defaultLocale.
-    if (!prefixDefault) {
+    } else {
+      // prefixDefault is false and using default locale
       response = NextResponse.rewrite(
         new URL(newPath, request.url),
         responseOptions
