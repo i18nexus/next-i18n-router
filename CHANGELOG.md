@@ -1,3 +1,7 @@
+## 5.4.3
+
+- Remove console warning in `localeDetector` when invalid accept-language header present
+
 ## 5.4.2
 
 - Fixes bug where `noPrefix` did not use `localeDetector` when no cookie present

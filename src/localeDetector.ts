@@ -15,8 +15,7 @@ function localeDetector(request: NextRequest, config: Config): string {
   try {
     return match(languages, config.locales, config.defaultLocale);
   } catch (e) {
-    console.warn(`No valid locales in accept-language header: ${languages}`);
-    console.warn(`Reverting to using defaultLocale: ${config.defaultLocale}`);
+    // invalid accept-language header
 
     return config.defaultLocale;
   }
