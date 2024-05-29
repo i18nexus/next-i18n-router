@@ -136,7 +136,8 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
       response.cookies.set(localeCookie, pathLocale, {
         path: request.nextUrl.basePath || undefined,
         sameSite: 'strict',
-        maxAge: 31536000 // expires after one year
+        maxAge: 31536000, // expires after one year
+        ...config.cookieOptions
       });
     };
 

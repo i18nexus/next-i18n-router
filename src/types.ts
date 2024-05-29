@@ -1,4 +1,11 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+
+interface CookieOptions {
+  domain?: string;
+  path?: string;
+  maxAge?: number;
+  sameSite?: true | false | 'lax' | 'strict' | 'none';
+}
 
 export interface Config {
   locales: readonly string[];
@@ -9,4 +16,5 @@ export interface Config {
   noPrefix?: boolean;
   basePath?: string;
   serverSetCookie?: 'if-empty' | 'always' | 'never';
+  cookieOptions?: CookieOptions;
 }
