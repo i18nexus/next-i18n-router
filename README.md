@@ -68,6 +68,7 @@ You now have internationalized routing!
 | `noPrefix`        | `false`         | boolean                           |           |
 | `serverSetCookie` | `'always'`      | "always" \| "if-empty" \| "never" |           |
 | `basePath`        | `''`            | string                            |           |
+| `cookieOptions`   | (See below)     | CookieOptions                     |           |
 
 ## Locale Path Prefixing
 
@@ -123,6 +124,27 @@ The `serverSetCookie` option automatically changes a visitor's preferred locale 
 `'never'`: The middleware will not automatically set the cookie.
 
 If you are using `noPrefix`, the `serverSetCookie` option does not do anything since there is no locale in the pathname to read from. All language changing must be done by setting the cookie manually.
+
+## Cookie Options (optional)
+
+You can set the `cookieOptions` option to configure the cookie that is set by the middleware. This option is an object that can contain any of the following properties:
+
+- `domain`: A string representing the domain where the cookie is available.
+- `sameSite`: A string representing the SameSite attribute of the cookie.
+- `maxAge`: A number representing the number of seconds until the cookie expires.
+- `path`: A string representing the path where the cookie is available.
+Here's a table with the cookie options, including default values for `path` and `maxAge`, and a clear explanation for the `path` default:
+
+## Cookie Options (optional)
+
+You can set the `cookieOptions` option to configure the cookie that is set by the middleware. This option is an object that can contain any of the following properties:
+
+| Property   | Default Value                    | Type                                   |
+|------------|----------------------------------|----------------------------------------|
+| `domain`   | -                                | string                                 |
+| `sameSite` | `'strict'`                       | "lax" \| "strict" \| "none" \| boolean |
+| `maxAge`   | `31536000`                       | number                                 |
+| `path`     | The base path of the current URL | string                                 |
 
 ## Using `basePath` (optional)
 
