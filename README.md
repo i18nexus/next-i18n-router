@@ -67,6 +67,7 @@ You now have internationalized routing!
 | `localeCookie`    | `'NEXT_LOCALE'` | string                            |           |
 | `noPrefix`        | `false`         | boolean                           |           |
 | `serverSetCookie` | `'always'`      | "always" \| "if-empty" \| "never" |           |
+| `cookieOptions`   | (See below)     | object                            |           |
 | `basePath`        | `''`            | string                            |           |
 
 ## Locale Path Prefixing
@@ -123,6 +124,22 @@ The `serverSetCookie` option automatically changes a visitor's preferred locale 
 `'never'`: The middleware will not automatically set the cookie.
 
 If you are using `noPrefix`, the `serverSetCookie` option does not do anything since there is no locale in the pathname to read from. All language changing must be done by setting the cookie manually.
+
+### cookieOptions (optional)
+
+The server sets the cookie by setting the `Set-Cookie` HTTP response header on the `NextResponse`. [(Learn More)](https://nextjs.org/docs/app/api-reference/functions/next-response#setname-value)
+
+By default, `cookieOptions` is set to:
+
+```
+{
+  sameSite: 'strict',
+  maxAge: 31536000,
+  path: {the basePath of the incoming NextRequest}
+}
+```
+
+You can set your own `cookieOptions` object containing any of the valid `Set-Cookie` attributes: [MDN: Set-Cookie](https://nextjs.org/docs/app/api-reference/functions/next-response)
 
 ## Using `basePath` (optional)
 

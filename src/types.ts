@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 
 export interface Config {
   locales: readonly string[];
@@ -9,4 +10,5 @@ export interface Config {
   noPrefix?: boolean;
   basePath?: string;
   serverSetCookie?: 'if-empty' | 'always' | 'never';
+  cookieOptions?: Partial<ResponseCookie>;
 }

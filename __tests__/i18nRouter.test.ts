@@ -41,14 +41,6 @@ basePaths.forEach(basePath => {
     });
 
     it('should throw an error if localeDetector is not a function', () => {
-      const config = {
-        locales: ['en-US'],
-        defaultLocale: 'en-US',
-        localeDetector: 'invalid',
-        basePath,
-        serverSetCookie: 'never'
-      };
-
       expect(() =>
         i18nRouter(mockRequest('/', ['en']), {
           locales: ['en-US'],
@@ -59,6 +51,18 @@ basePaths.forEach(basePath => {
           serverSetCookie: 'never'
         })
       ).toThrow(/localeDetector/);
+    });
+
+    it('should throw an error if invalid serverSetCookie value', () => {
+      expect(() =>
+        i18nRouter(mockRequest('/', ['en']), {
+          locales: ['en-US'],
+          defaultLocale: 'en-US',
+          basePath,
+          // @ts-ignore
+          serverSetCookie: 'invalid'
+        })
+      ).toThrow(/serverSetCookie/);
     });
 
     it('should throw an error if request argument is missing', () => {
@@ -399,6 +403,53 @@ basePaths.forEach(basePath => {
       expect(mockRewrite.mock.calls[0][0].href).toEqual(
         new URL(`${basePath}/de/faq`, 'https://example.com/faq').href
       );
+    });
+
+    it('should have default cookie options', () => {
+      const mockRedirect = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.redirect = mockRedirect;
+
+      const request = mockRequest('/de/faq', ['en']);
+
+      const response = i18nRouter(request, {
+        locales: ['en', 'de'],
+        defaultLocale: 'en',
+        basePath
+      });
+
+      const cookieHeader = response.headers.get('set-cookie');
+      expect(cookieHeader).toContain('Path=/;');
+      expect(cookieHeader).toContain('Max-Age=31536000');
+      expect(cookieHeader).toContain('SameSite=strict');
+    });
+
+    it('should use cookieOptions option', () => {
+      const mockRedirect = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.redirect = mockRedirect;
+
+      const request = mockRequest('/de/faq', ['en']);
+
+      const response = i18nRouter(request, {
+        locales: ['en', 'de'],
+        defaultLocale: 'en',
+        basePath,
+        cookieOptions: {
+          path: '/test',
+          maxAge: 31536001,
+          sameSite: 'lax',
+          secure: true,
+          httpOnly: true,
+          domain: 'example.com'
+        }
+      });
+
+      const cookieHeader = response.headers.get('set-cookie');
+      expect(cookieHeader).toContain('Path=/test;');
+      expect(cookieHeader).toContain('Max-Age=31536001');
+      expect(cookieHeader).toContain('SameSite=lax');
+      expect(cookieHeader).toContain('Secure;');
+      expect(cookieHeader).toContain('HttpOnly;');
+      expect(cookieHeader).toContain('Domain=example.com');
     });
   });
 });

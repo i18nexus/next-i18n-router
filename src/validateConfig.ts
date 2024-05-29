@@ -18,6 +18,23 @@ function validateConfig(config: Config): void {
   if (config.localeDetector && typeof config.localeDetector !== 'function') {
     throw new Error(`'localeDetector' must be a function.`);
   }
+
+  if (config.cookieOptions) {
+    if (typeof config.cookieOptions !== 'object') {
+      throw new Error(`'cookieOptions' must be an object.`);
+    }
+  }
+
+  if (config.serverSetCookie) {
+    const validOptions = ['if-empty', 'always', 'never'];
+    if (!validOptions.includes(config.serverSetCookie)) {
+      throw new Error(
+        `Invalid 'serverSetCookie' value. Valid values are ${validOptions.join(
+          ' | '
+        )}`
+      );
+    }
+  }
 }
 
 export default validateConfig;

@@ -1,3 +1,7 @@
+## 5.5.0
+
+- Add `cookieOptions` config option for setting custom `Set-Cookie` attributes
+
 ## 5.4.3
 
 - Remove console warning in `localeDetector` when invalid accept-language header present

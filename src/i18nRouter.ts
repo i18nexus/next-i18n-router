@@ -20,7 +20,12 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     prefixDefault = false,
     basePath = '',
     serverSetCookie = 'always',
-    noPrefix = false
+    noPrefix = false,
+    cookieOptions = {
+      path: request.nextUrl.basePath || undefined,
+      sameSite: 'strict',
+      maxAge: 31536000 // one year
+    }
   } = config;
 
   validateConfig(config);
@@ -133,11 +138,7 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     }
 
     const setCookie = () => {
-      response.cookies.set(localeCookie, pathLocale, {
-        path: request.nextUrl.basePath || undefined,
-        sameSite: 'strict',
-        maxAge: 31536000 // expires after one year
-      });
+      response.cookies.set(localeCookie, pathLocale, cookieOptions);
     };
 
     if (serverSetCookie !== 'never') {
