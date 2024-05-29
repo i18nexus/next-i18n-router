@@ -4,7 +4,7 @@ interface CookieOptions {
   domain?: string;
   path?: string;
   maxAge?: number;
-  sameSite?: true | false | 'lax' | 'strict' | 'none';
+  sameSite?: boolean | 'lax' | 'strict' | 'none';
 }
 
 export interface Config {
