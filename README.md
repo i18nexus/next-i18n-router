@@ -199,3 +199,13 @@ The `react-intl` library works great with the App Router. But it does require a 
 For a full walkthrough on using `react-intl` with `next-i18n-router` (plus Google Translate/DeepL integration), see [this tutorial](https://i18nexus.com/tutorials/nextjs/react-intl).
 
 You can also find an example project [here](https://github.com/i18nexus/next-i18n-router/tree/main/examples/react-intl-example).
+
+# FAQ
+
+## How do I create a dropdown for a user to change the language?
+
+In our [example projects](https://github.com/i18nexus/next-i18n-router/tree/main/examples) you will find a `LanguageChanger` component showing how to do this. Note that `router.refresh` is called after changing languages. This is because Next will not route the request through the middleware if the page happens to be cached on the client. `router.refresh` ensures the middleware is run on language change, allowing the locale cookie to be set properly.
+
+## My not-found page is not working. What's wrong?
+
+This is likely because of our use of the `[locale]` dynamic segment. This is not a bug with this library. It is a design choice of NextJS when using a not-found page in a dynamic segment. To solve this, we recommend making the adjustment described [here](https://github.com/i18nexus/next-i18n-router/issues/36#issuecomment-1821887026).
