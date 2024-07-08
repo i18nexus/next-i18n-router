@@ -100,8 +100,27 @@ basePaths.forEach(basePath => {
         serverSetCookie: 'never'
       });
 
-      expect(mockRedirect).toHaveBeenCalledWith(
-        new URL(`${basePath}/en/faq`, 'https://example.com')
+      expect(mockRedirect.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/en/faq`, 'https://example.com').href
+      );
+    });
+
+    it('should not have a trailing slash', () => {
+      const mockRedirect = jest.fn();
+      NextResponse.redirect = mockRedirect;
+
+      const request = mockRequest('/', ['en']);
+
+      i18nRouter(request, {
+        locales: ['en', 'jp'],
+        defaultLocale: 'en',
+        prefixDefault: true,
+        basePath,
+        serverSetCookie: 'never'
+      });
+
+      expect(mockRedirect.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/en`, 'https://example.com').href
       );
     });
 
@@ -118,8 +137,8 @@ basePaths.forEach(basePath => {
         serverSetCookie: 'never'
       });
 
-      expect(mockRedirect).toHaveBeenCalledWith(
-        new URL(`${basePath}/jp/faq`, 'https://example.com')
+      expect(mockRedirect.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/jp/faq`, 'https://example.com').href
       );
     });
 
@@ -137,8 +156,8 @@ basePaths.forEach(basePath => {
         serverSetCookie: 'never'
       });
 
-      expect(mockRedirect).toHaveBeenCalledWith(
-        new URL(`${basePath}/jp/faq`, 'https://example.com')
+      expect(mockRedirect.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/jp/faq`, 'https://example.com').href
       );
     });
 
@@ -155,8 +174,8 @@ basePaths.forEach(basePath => {
         serverSetCookie: 'never'
       });
 
-      expect(mockRedirect).toHaveBeenCalledWith(
-        new URL(`${basePath}/faq`, 'https://example.com')
+      expect(mockRedirect.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/faq`, 'https://example.com').href
       );
     });
 
@@ -205,8 +224,8 @@ basePaths.forEach(basePath => {
         serverSetCookie: 'never'
       });
 
-      expect(mockRedirect).toHaveBeenCalledWith(
-        new URL(`${basePath}/jp/faq/support`, 'https://example.com')
+      expect(mockRedirect.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/jp/faq/support`, 'https://example.com').href
       );
     });
 
@@ -255,8 +274,8 @@ basePaths.forEach(basePath => {
         serverSetCookie: 'never'
       });
 
-      expect(mockRedirect).toHaveBeenCalledWith(
-        new URL(`${basePath}/jp/faq`, 'https://example.com')
+      expect(mockRedirect.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/jp/faq`, 'https://example.com').href
       );
     });
 
@@ -273,8 +292,8 @@ basePaths.forEach(basePath => {
         serverSetCookie: 'never'
       });
 
-      expect(mockRedirect).toHaveBeenCalledWith(
-        new URL(`${basePath}/jp/faq`, 'https://example.com')
+      expect(mockRedirect.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/jp/faq`, 'https://example.com').href
       );
     });
 
@@ -307,8 +326,8 @@ basePaths.forEach(basePath => {
         serverSetCookie: 'always'
       });
 
-      expect(mockRedirect).toHaveBeenCalledWith(
-        new URL(`${basePath}/faq`, 'https://example.com')
+      expect(mockRedirect.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/faq`, 'https://example.com').href
       );
     });
 
@@ -325,8 +344,8 @@ basePaths.forEach(basePath => {
         serverSetCookie: 'if-empty'
       });
 
-      expect(mockRedirect).toHaveBeenCalledWith(
-        new URL(`${basePath}/jp/faq`, 'https://example.com')
+      expect(mockRedirect.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/jp/faq`, 'https://example.com').href
       );
     });
 

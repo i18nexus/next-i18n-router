@@ -80,6 +80,11 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
 
     let newPath = `${locale}${pathname}`;
 
+    // this avoids double redirect: / => /en/ => /en
+    if (pathname === '/') {
+      newPath = newPath.slice(0, -1);
+    }
+
     newPath = `${basePath}${basePathTrailingSlash ? '' : '/'}${newPath}`;
 
     if (request.nextUrl.search) {
