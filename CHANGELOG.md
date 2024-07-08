@@ -1,3 +1,7 @@
+## 5.5.1
+
+- Fixes bug that caused an unnecessary extra redirect due to trailing slash in pathname
+
 ## 5.5.0
 
 - Add `cookieOptions` config option for setting custom `Set-Cookie` attributes
