@@ -105,6 +105,27 @@ basePaths.forEach(basePath => {
       );
     });
 
+    it('should redirect permanently when prefixDefault is true and permanentRedirect is true', () => {
+      const mockRedirect = jest.fn();
+      NextResponse.redirect = mockRedirect;
+
+      const request = mockRequest('/faq', ['en']);
+
+      i18nRouter(request, {
+        locales: ['en', 'jp'],
+        defaultLocale: 'en',
+        prefixDefault: true,
+        permanentRedirect: true,
+        basePath,
+        serverSetCookie: 'never'
+      });
+
+      expect(mockRedirect).toHaveBeenCalledWith(
+        new URL(`${basePath}/en/faq`, 'https://example.com'),
+        301
+      );
+    });
+
     it('should redirect when prefixDefault is false and defaultLocale does not match accept-language', () => {
       const mockRedirect = jest.fn();
       NextResponse.redirect = mockRedirect;

@@ -58,17 +58,18 @@ You now have internationalized routing!
 
 ## Config Options
 
-| Option            | Default value   | Type                              | Required? |
-| ----------------- | --------------- | --------------------------------- | --------- |
-| `locales`         |                 | string[]                          | &#10004;  |
-| `defaultLocale`   |                 | string                            | &#10004;  |
-| `prefixDefault`   | `false`         | boolean                           |           |
-| `localeDetector`  | (See below)     | function \| false                 |           |
-| `localeCookie`    | `'NEXT_LOCALE'` | string                            |           |
-| `noPrefix`        | `false`         | boolean                           |           |
-| `serverSetCookie` | `'always'`      | "always" \| "if-empty" \| "never" |           |
-| `cookieOptions`   | (See below)     | object                            |           |
-| `basePath`        | `''`            | string                            |           |
+| Option              | Default value   | Type                              | Required? |
+| ------------------- | --------------- | --------------------------------- | --------- |
+| `locales`           |                 | string[]                          | &#10004;  |
+| `defaultLocale`     |                 | string                            | &#10004;  |
+| `prefixDefault`     | `false`         | boolean                           |           |
+| `permanentRedirect` | `false`         | boolean                           |           |
+| `localeDetector`    | (See below)     | function \| false                 |           |
+| `localeCookie`      | `'NEXT_LOCALE'` | string                            |           |
+| `noPrefix`          | `false`         | boolean                           |           |
+| `serverSetCookie`   | `'always'`      | "always" \| "if-empty" \| "never" |           |
+| `cookieOptions`     | (See below)     | object                            |           |
+| `basePath`          | `''`            | string                            |           |
 
 ## Locale Path Prefixing
 
@@ -79,6 +80,7 @@ By default, the `defaultLocale`'s path is not prefixed with the locale. For exam
 **German**: `/de/products`
 
 To also include your default locale in the path, set the `prefixDefault` config option to `true`.
+use permanentRedirect true to redriect using 301(permanent) status instead of 307 (temporary)
 
 To hide all locales from the path, set the `noPrefix` config option to `true`.
 

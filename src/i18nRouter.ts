@@ -18,6 +18,7 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     localeCookie = 'NEXT_LOCALE',
     localeDetector = defaultLocaleDetector,
     prefixDefault = false,
+    permanentRedirect = false,
     basePath = '',
     serverSetCookie = 'always',
     noPrefix = false,
@@ -92,6 +93,9 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
         responseOptions
       );
     } else if (prefixDefault || locale !== defaultLocale) {
+      if (permanentRedirect) {
+        return NextResponse.redirect(new URL(newPath, request.url), 301);
+      }
       return NextResponse.redirect(new URL(newPath, request.url));
     } else {
       // prefixDefault is false and using default locale
@@ -116,7 +120,12 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
 
         newPath = `${basePath}${newPath}`;
 
-        response = NextResponse.redirect(new URL(newPath, request.url));
+        if (permanentRedirect) {
+          response = NextResponse.redirect(new URL(newPath, request.url), 301);
+        }
+        {
+          response = NextResponse.redirect(new URL(newPath, request.url));
+        }
       }
     }
 
@@ -132,9 +141,17 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
         pathWithoutLocale += request.nextUrl.search;
       }
 
-      response = NextResponse.redirect(
-        new URL(`${basePath}${pathWithoutLocale}`, request.url)
-      );
+      if (permanentRedirect) {
+        response = NextResponse.redirect(
+          new URL(`${basePath}${pathWithoutLocale}`, request.url),
+          301
+        );
+      }
+      {
+        response = NextResponse.redirect(
+          new URL(`${basePath}${pathWithoutLocale}`, request.url)
+        );
+      }
     }
 
     const setCookie = () => {
