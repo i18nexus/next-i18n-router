@@ -54,6 +54,16 @@ export const config = {
 };
 ```
 
+Add locale checker at the top of you `layout.tsx to redirect any request to 404 if that locale is not mentioned in your config:
+
+```js
+import { notFound } from 'next/navigation';
+//-------------------------------------------
+if (!i18nConfig.locales.includes(locale)) {
+  notFound();
+}
+```
+
 You now have internationalized routing!
 
 ## Config Options
