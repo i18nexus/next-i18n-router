@@ -23,7 +23,6 @@ export default function RootLayout({
   children: ReactNode;
   params: { locale: string };
 }) {
-  // Redirect to 404 if locale is not in the list of supported locales
   if (!i18nConfig.locales.includes(locale)) {
     notFound();
   }

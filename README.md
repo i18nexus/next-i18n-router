@@ -54,13 +54,21 @@ export const config = {
 };
 ```
 
-Add locale checker at the top of you `layout.tsx to redirect any request to 404 if that locale is not mentioned in your config:
+In your root layout, add a `notFound` redirect for any unsupported locales:
 
 ```js
+...
 import { notFound } from 'next/navigation';
-//-------------------------------------------
-if (!i18nConfig.locales.includes(locale)) {
-  notFound();
+...
+
+export default function RootLayout({ children, params: { locale } }) {
+  if (!i18nConfig.locales.includes(locale)) {
+    notFound();
+  }
+
+  return (
+    ...
+  );
 }
 ```
 
