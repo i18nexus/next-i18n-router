@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ReactNode } from 'react';
 import { dir } from 'i18next';
+import { notFound } from 'next/navigation';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,6 +24,11 @@ export default function RootLayout({
   children: ReactNode;
   params: { locale: string };
 }) {
+  // Redirect to 404 if locale is not in the list of supported locales
+  if (!i18nConfig.locales.includes(locale)) {
+    notFound();
+  }
+
   return (
     <html lang={locale} dir={dir(locale)}>
       <body className={inter.className}>{children}</body>
