@@ -7,7 +7,9 @@ import TranslationsProvider from '@/components/TranslationsProvider';
 
 const i18nNamespaces = ['home'];
 
-async function Home({ params: { locale } }: { params: { locale: string } }) {
+async function Home(props: { params: Promise<{ locale: string }> }) {
+  const { locale } = await props.params;
+
   const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
   return (
