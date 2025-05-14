@@ -1,6 +1,6 @@
 import { useCurrentLocale } from '../src/client';
 
-let pathname: string;
+let pathname: string | null;
 
 jest.mock('next/navigation', () => ({
   usePathname() {
@@ -99,6 +99,18 @@ basePaths.forEach(basePath => {
       };
 
       expect(useCurrentLocale(config, 'random_cookie=sdf')).toEqual('en');
+    });
+
+    it('should return defaultLocale when pathname is null', () => {
+      pathname = null;
+
+      const config = {
+        defaultLocale: 'en',
+        locales: ['en', 'de'],
+        basePath
+      };
+
+      expect(useCurrentLocale(config)).toEqual('en');
     });
   });
 });

@@ -54,7 +54,9 @@ const useCurrentLocale = (
 
     return (
       currentPathname === `${base}/${locale}` ||
-      currentPathname.startsWith(`${base}/${locale}/`)
+      // While the return type of usePathname is string, there are times when usePathname returns null, so we need to null check:
+      // https://nextjs.org/docs/app/api-reference/functions/use-pathname
+      currentPathname?.startsWith(`${base}/${locale}/`)
     );
   });
 
