@@ -1,3 +1,7 @@
+## 5.5.2
+
+- The `useCurrentLocale` hook did not handle a null return value from `usePathname`. `useCurrentLocale` now returns the default locale if `usePathname` returns null. #103
+
 ## 5.5.1
 
 - Fixes bug that caused an unnecessary extra redirect due to trailing slash in pathname
