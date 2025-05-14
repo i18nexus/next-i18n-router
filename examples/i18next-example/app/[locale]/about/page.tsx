@@ -6,7 +6,9 @@ import initTranslations from '@/app/i18n';
 
 const i18nNamespaces = ['about', 'test'];
 
-async function About({ params: { locale } }: { params: { locale: string } }) {
+async function About(props: { params: Promise<{ locale: string }> }) {
+  const { locale } = await props.params;
+
   const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
   return (
