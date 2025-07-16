@@ -151,7 +151,7 @@ By default, `cookieOptions` is set to:
 
 ```
 {
-  sameSite: 'strict',
+  sameSite: 'lax',
   maxAge: 31536000,
   path: {the basePath of the incoming NextRequest}
 }

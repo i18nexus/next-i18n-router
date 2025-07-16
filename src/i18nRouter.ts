@@ -23,7 +23,7 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
     noPrefix = false,
     cookieOptions = {
       path: request.nextUrl.basePath || undefined,
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: 31536000 // one year
     }
   } = config;

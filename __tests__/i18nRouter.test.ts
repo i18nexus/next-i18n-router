@@ -439,7 +439,7 @@ basePaths.forEach(basePath => {
       const cookieHeader = response.headers.get('set-cookie');
       expect(cookieHeader).toContain('Path=/;');
       expect(cookieHeader).toContain('Max-Age=31536000');
-      expect(cookieHeader).toContain('SameSite=strict');
+      expect(cookieHeader).toContain('SameSite=lax');
     });
 
     it('should use cookieOptions option', () => {
@@ -455,7 +455,7 @@ basePaths.forEach(basePath => {
         cookieOptions: {
           path: '/test',
           maxAge: 31536001,
-          sameSite: 'lax',
+          sameSite: 'strict',
           secure: true,
           httpOnly: true,
           domain: 'example.com'
@@ -465,7 +465,7 @@ basePaths.forEach(basePath => {
       const cookieHeader = response.headers.get('set-cookie');
       expect(cookieHeader).toContain('Path=/test;');
       expect(cookieHeader).toContain('Max-Age=31536001');
-      expect(cookieHeader).toContain('SameSite=lax');
+      expect(cookieHeader).toContain('SameSite=strict');
       expect(cookieHeader).toContain('Secure;');
       expect(cookieHeader).toContain('HttpOnly;');
       expect(cookieHeader).toContain('Domain=example.com');

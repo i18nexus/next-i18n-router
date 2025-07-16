@@ -1,3 +1,7 @@
+## 5.5.3
+
+- Changes the default `cookieOptions` to use `sameSite: 'lax'` instead of `sameSite: 'strict'` due to infinite redirect issue described in #45
+
 ## 5.5.2
 
 - The `useCurrentLocale` hook did not handle a null return value from `usePathname`. `useCurrentLocale` now returns the default locale if `usePathname` returns null. #103
