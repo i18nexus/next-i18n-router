@@ -33,13 +33,7 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
   const pathname = request.nextUrl.pathname;
   const basePathTrailingSlash = basePath.endsWith('/');
 
-  const responseOptions = {
-    request: {
-      headers: new Headers(request.headers)
-    }
-  };
-
-  let response = NextResponse.next(responseOptions);
+  let response = NextResponse.next();
 
   let cookieLocale;
   // check cookie for locale
@@ -93,16 +87,14 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
 
     if (noPrefix) {
       response = NextResponse.rewrite(
-        new URL(newPath, request.url),
-        responseOptions
+        new URL(newPath, request.url)
       );
     } else if (prefixDefault || locale !== defaultLocale) {
       return NextResponse.redirect(new URL(newPath, request.url));
     } else {
       // prefixDefault is false and using default locale
       response = NextResponse.rewrite(
-        new URL(newPath, request.url),
-        responseOptions
+        new URL(newPath, request.url)
       );
     }
   } else {
