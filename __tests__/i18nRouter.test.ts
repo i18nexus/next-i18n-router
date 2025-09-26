@@ -470,5 +470,47 @@ basePaths.forEach(basePath => {
       expect(cookieHeader).toContain('HttpOnly;');
       expect(cookieHeader).toContain('Domain=example.com');
     });
+
+    it('should forward request headers into response options', () => {
+      const request = mockRequest('/faq', ['en'], 'jp');
+      request.headers.set('x-test-header', 'hello-world');
+
+      const mockNext = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.next = mockNext;
+
+      i18nRouter(request, {
+        locales: ['en', 'jp'],
+        defaultLocale: 'en',
+        basePath,
+        serverSetCookie: 'never'
+      });
+
+      expect(mockNext).toHaveBeenCalledTimes(1);
+      const responseOptions = mockNext.mock.calls[0][0];
+      expect(responseOptions?.request?.headers.get('x-test-header')).toBe(
+        'hello-world'
+      );
+    });
+
+    it('should forward request headers into rewrite response options', () => {
+      const request = mockRequest('/faq', ['en'], 'jp');
+      request.headers.set('x-test-header', 'rewrite-check');
+
+      const mockRewrite = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.rewrite = mockRewrite;
+
+      i18nRouter(request, {
+        locales: ['en', 'jp'],
+        defaultLocale: 'en',
+        basePath,
+        noPrefix: true
+      });
+
+      expect(mockRewrite).toHaveBeenCalledTimes(1);
+      const responseOptions = mockRewrite.mock.calls[0][1];
+      expect(responseOptions?.request?.headers.get('x-test-header')).toBe(
+        'rewrite-check'
+      );
+    });
   });
 });
