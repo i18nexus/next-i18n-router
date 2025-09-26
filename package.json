@@ -1,6 +1,6 @@
 {
   "name": "next-i18n-router",
-  "version": "5.5.3",
+  "version": "5.5.4",
   "description": "Next.js App Router internationalized routing and locale detection.",
   "repository": "https://github.com/i18nexus/next-i18n-router",
   "keywords": [
@@ -46,5 +46,13 @@
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.5.2",
     "negotiator": "^0.6.3"
+  },
+  "peerDependencies": {
+    "next": "^13 || ^14 || ^15"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": false
+    }
   }
 }
