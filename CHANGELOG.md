@@ -1,3 +1,8 @@
+## 5.5.5
+
+- Upgraded to support NextJS v16
+- Removed eslint-config-airbnb as it is not compatible with eslint 9 required by Next v16
+
 ## 5.5.3
 
 - Changes the default `cookieOptions` to use `sameSite: 'lax'` instead of `sameSite: 'strict'` due to infinite redirect issue described in #45
