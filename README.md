@@ -4,8 +4,6 @@
   </a>
 </div>
 
-<br />
-
 # next-i18n-router
 
 **Adds internationalized routing for Next.js apps that use the App Router**
