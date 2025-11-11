@@ -44,7 +44,7 @@ const i18nConfig = {
 module.exports = i18nConfig;
 ```
 
-Create a `proxy.js` file (or `middleware.js` if you're using Next.js 15 or earlier) in the root of your project — or inside /src if your app uses a /src directory.
+Create a `proxy.js` file (or `middleware.js` if you're using Next.js 15 or earlier) in the root of your project. If your app uses a `/src` directory, put it in `/src`.
 
 This is where `i18nRouter` will be used to handle internationalized redirects and rewrites:
 
