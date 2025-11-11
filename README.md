@@ -1,3 +1,11 @@
+<div align="center">
+  <a href="https://i18nexus.com" target="_blank">
+    <img src="./assets/sponsor.svg" alt="i18nexus Logo" width="350" />
+  </a>
+</div>
+
+---
+
 # next-i18n-router
 
 **Adds internationalized routing for Next.js apps that use the App Router**
