@@ -52,11 +52,12 @@ This is where `i18nRouter` will be used to handle internationalized redirects an
 import { i18nRouter } from 'next-i18n-router';
 import i18nConfig from './i18nConfig';
 
-export function middleware(request) {
+// name this function "middleware" in Next 15 or earlier
+export function proxy(request) {
   return i18nRouter(request, i18nConfig);
 }
 
-// only applies this middleware to files in the app directory
+// only applies this logic to files in the app directory
 export const config = {
   matcher: '/((?!api|static|.*\\..*|_next).*)'
 };
