@@ -1,10 +1,10 @@
 <div align="center">
   <a href="https://i18nexus.com" target="_blank">
-    <img src="./assets/sponsor.svg" alt="i18nexus Logo" width="350" />
+    <img src="./assets/sponsor.png" alt="i18nexus Logo" width="350" />
   </a>
 </div>
 
----
+<br />
 
 # next-i18n-router
 
