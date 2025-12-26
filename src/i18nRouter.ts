@@ -58,6 +58,8 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
           pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
       );
 
+  let resolvedLocale = pathLocale;
+
   if (!pathLocale) {
     let locale = cookieLocale;
 
@@ -78,6 +80,7 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
       locale = defaultLocale;
     }
 
+    resolvedLocale = locale;
     let newPath = `${locale}${pathname}`;
 
     // this avoids double redirect: / => /en/ => /en
@@ -157,11 +160,12 @@ function i18nRouter(request: NextRequest, config: Config): NextResponse {
         setCookie();
       }
     }
+    resolvedLocale = pathLocale;
   }
 
   response.headers.set(
     'x-next-i18n-router-locale',
-    pathLocale || defaultLocale
+    resolvedLocale || defaultLocale
   );
 
   return response;
