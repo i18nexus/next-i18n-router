@@ -1,3 +1,7 @@
+## 5.5.6
+
+- Fix incorrect x-next-i18n-router-locale header when `noPrefix` is set to `true`.
+
 ## 5.5.5
 
 - Upgraded to support NextJS v16
