@@ -211,14 +211,6 @@ function ExampleServerComponent({ params: { locale } }) {
 
 # Usage with popular i18n libraries
 
-## react-i18next
-
-The maintainers of `i18next` recommend using `react-i18next` with the App Router instead of `next-i18next`. The popular `next-i18next` library is built specifically for the Pages Router. This means that if you are currently migrating from the Pages Router and use `next-i18next`, you will need to refactor to use `react-i18next`.
-
-For a full walkthrough on setting up `react-i18next` with `next-i18n-router` (plus Google Translate/DeepL integration), see [this tutorial](https://i18nexus.com/tutorials/nextjs/react-i18next).
-
-You can also find an example project [here](https://github.com/i18nexus/next-i18n-router/tree/main/examples/i18next-example).
-
 ## react-intl
 
 The `react-intl` library works great with the App Router. But it does require a litte extra configuration for usage in Server Components.
@@ -226,6 +218,14 @@ The `react-intl` library works great with the App Router. But it does require a 
 For a full walkthrough on using `react-intl` with `next-i18n-router` (plus Google Translate/DeepL integration), see [this tutorial](https://i18nexus.com/tutorials/nextjs/react-intl).
 
 You can also find an example project [here](https://github.com/i18nexus/next-i18n-router/tree/main/examples/react-intl-example).
+
+## react-i18next
+
+If you use `i18next`, you can now use either `next-i18next` or `react-i18next` with the App Router. `next-i18next` previously only worked with the Pages Router, but it recently added App Router support in 2026. If you want to use `next-i18next`, see [this `next-i18next` App Router tutorial](https://i18nexus.com/tutorials/nextjs/next-i18next-app-router). `next-i18n-router` is not needed for that setup.
+
+If you're interested in using `react-i18next` directly instead, see [this tutorial](https://i18nexus.com/tutorials/nextjs/react-i18next).
+
+You can also find an example project [here](https://github.com/i18nexus/next-i18n-router/tree/main/examples/i18next-example).
 
 # FAQ
 
