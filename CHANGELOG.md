@@ -1,3 +1,7 @@
+## 5.5.7
+
+- Update README to include clarification between react-i18next and next-i18next.
+
 ## 5.5.6
 
 - Fix incorrect x-next-i18n-router-locale header when `noPrefix` is set to `true`.
