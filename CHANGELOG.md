@@ -1,3 +1,7 @@
+## 5.5.8
+
+- Fix cookie-driven redirects so default-locale targets are canonicalized correctly when `prefixDefault` is `false`.
+
 ## 5.5.7
 
 - Update README to include clarification between react-i18next and next-i18next.
