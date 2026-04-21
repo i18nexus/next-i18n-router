@@ -297,6 +297,42 @@ basePaths.forEach(basePath => {
       );
     });
 
+    it('should redirect to cookie locale when default locale is in path and serverSetCookie is if-empty', () => {
+      const mockRedirect = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.redirect = mockRedirect;
+
+      const request = mockRequest('/en/faq', ['en'], 'jp');
+
+      i18nRouter(request, {
+        locales: ['en', 'de', 'jp'],
+        defaultLocale: 'en',
+        basePath,
+        serverSetCookie: 'if-empty'
+      });
+
+      expect(mockRedirect.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/jp/faq`, 'https://example.com').href
+      );
+    });
+
+    it('should remove default locale prefix when redirecting to cookie locale', () => {
+      const mockRedirect = jest.fn().mockReturnValue(new NextResponse());
+      NextResponse.redirect = mockRedirect;
+
+      const request = mockRequest('/de/faq', ['en'], 'en');
+
+      i18nRouter(request, {
+        locales: ['en', 'de', 'jp'],
+        defaultLocale: 'en',
+        basePath,
+        serverSetCookie: 'if-empty'
+      });
+
+      expect(mockRedirect.mock.calls[0][0].href).toEqual(
+        new URL(`${basePath}/faq`, 'https://example.com').href
+      );
+    });
+
     it('should not redirect when serverSetCookie is always', () => {
       const mockRedirect = jest.fn().mockReturnValue(new NextResponse());
       NextResponse.redirect = mockRedirect;
