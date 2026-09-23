@@ -2,18 +2,14 @@ import BackButton from './BackButton';
 import styles from '../page.module.css';
 import LanguageChanger from '@/components/LanguageChanger';
 import TranslationsProvider from '@/components/TranslationsProvider';
-import initTranslations from '@/app/i18n';
+import getTranslations from '@/app/i18n';
 
-const i18nNamespaces = ['about', 'test'];
-
-async function About(props: { params: Promise<{ locale: string }> }) {
-  const { locale } = await props.params;
-
-  const { t, resources } = await initTranslations(locale, i18nNamespaces);
+async function About() {
+  const { t, resources, locale } = await getTranslations('about');
 
   return (
     <TranslationsProvider
-      namespaces={i18nNamespaces}
+      namespace="about"
       locale={locale}
       resources={resources}>
       <main className={styles.main}>

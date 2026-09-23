@@ -4,16 +4,20 @@ import ExampleClientComponent from '@/components/ExampleClientComponent';
 import styles from './page.module.css';
 import LanguageChanger from '@/components/LanguageChanger';
 import Link from 'next/link';
+import localePath from '@/localePath';
+import ExampleServerComponent from '@/components/ExampleServerComponent';
 
-async function Home({ params: { locale } }: { params: { locale: string } }) {
-  const intl = await getIntl(locale);
+async function Home() {
+  const intl = await getIntl();
 
   return (
     <ServerIntlProvider messages={intl.messages} locale={intl.locale}>
       <main className={styles.main}>
-        <h1>{intl.formatMessage({ id: 'header' })}</h1>
+        <ExampleServerComponent />
         <ExampleClientComponent />
-        <Link href="/about">{intl.formatMessage({ id: 'page2' })}</Link>
+        <Link href={localePath(intl.locale, '/about')}>
+          {intl.formatMessage({ id: 'page2' })}
+        </Link>
         <LanguageChanger />
       </main>
     </ServerIntlProvider>

@@ -86,6 +86,7 @@ body {
 }
 
 body {
+  font-family: Arial, Helvetica, sans-serif;
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,

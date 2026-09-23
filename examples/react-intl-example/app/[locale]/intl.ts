@@ -1,17 +1,20 @@
-'server-only';
+import { cache } from 'react';
+import { createIntl, createIntlCache } from 'react-intl/server';
+import getLocale from '@/app/locale';
 
-import { createIntl } from '@formatjs/intl';
-import { MessageFormatElement } from 'react-intl';
+const formatterCache = createIntlCache();
 
-const getMessages = async (
-  locale: string
-): Promise<Record<string, MessageFormatElement[]> | Record<string, string>> => {
-  return (await import(`@/messages/${locale}.json`)).default;
-};
+const getIntl = cache(async () => {
+  const locale = await getLocale();
 
-export default async function getIntl(locale: string) {
-  return createIntl({
-    locale: locale,
-    messages: await getMessages(locale)
-  });
-}
+  return createIntl(
+    {
+      locale,
+      defaultLocale: 'en',
+      messages: (await import(`@/messages/${locale}.json`)).default
+    },
+    formatterCache
+  );
+});
+
+export default getIntl;

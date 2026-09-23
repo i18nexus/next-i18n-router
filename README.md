@@ -16,6 +16,8 @@ With the release of the App Router, internationalized routing has been removed a
 
 This library can be used with any of the popular Javascript i18n libraries such as `react-i18next` and `react-intl`. Tutorials and examples can be found [here](#usage-with-popular-i18n-libraries).
 
+If you use `next-intl` or the App Router integration in `next-i18next` v16+, use that library's routing setup. You do not need to add `next-i18n-router` as well. For the Pages Router, use Next.js's built-in internationalized routing.
+
 ## Installation
 
 ```sh
@@ -63,20 +65,23 @@ export const config = {
 };
 ```
 
-In your root layout, add a `notFound` redirect for any unsupported locales:
+In your root layout, return a not-found response for unsupported locales. On Next.js 15 and later, await `params`:
 
 ```js
-...
+import i18nConfig from '../../i18nConfig';
 import { notFound } from 'next/navigation';
-...
 
-export default function RootLayout({ children, params: { locale } }) {
+export default async function RootLayout({ children, params }) {
+  const { locale } = await params;
+
   if (!i18nConfig.locales.includes(locale)) {
     notFound();
   }
 
   return (
-    ...
+    <html lang={locale}>
+      <body>{children}</body>
+    </html>
   );
 }
 ```
@@ -201,13 +206,46 @@ function ExampleClientComponent() {
 
 ### In a Server Component:
 
-The current locale should be accessed from the component's `params` props:
+On **Next.js 16.3 and later**, use [`next/root-params`](https://nextjs.org/docs/app/api-reference/functions/next-root-params) to read the locale in any Server Component or server utility called while rendering one. This works with the existing `next-i18n-router` routing setup; no additional provider or package API is needed.
+
+The root layout must be `app/[locale]/layout.js` (or `src/app/[locale]/layout.js`), with no `app/layout.js` above it. Next.js generates the `locale()` export from the `[locale]` folder name. If your folder is named `[lang]`, import `lang` instead.
 
 ```js
-function ExampleServerComponent({ params: { locale } }) {
-  ...
+// components/LocaleLabel.js — can be nested anywhere under the root layout
+import { locale } from 'next/root-params';
+
+export default async function LocaleLabel() {
+  const currentLocale = await locale();
+  return <p>Current language: {currentLocale}</p>;
 }
 ```
+
+You can also call `locale()` inside your server-side translation loader, so callers do not have to pass the locale through props. Validate the locale before using it to load translation files.
+
+Root params read the **matched route**, including internal rewrites. They work when the default locale prefix is hidden and when `noPrefix: true` hides all locale prefixes. Keep `i18nRouter` in your proxy: it still detects the visitor's language and routes the request to the correct `[locale]` segment.
+
+Reading root params does not force dynamic rendering. To prerender every supported locale, export this from `app/[locale]/layout.js`:
+
+```js
+export function generateStaticParams() {
+  return i18nConfig.locales.map(locale => ({ locale }));
+}
+```
+
+With Next.js Cache Components enabled, `generateStaticParams` must include at least one value for each root parameter. Both the [React Intl example](examples/react-intl-example) and the [react-i18next example](examples/i18next-example) use root params and include checks for static rendering, Cache Components, and hidden locale prefixes.
+
+`next/root-params` is server-only and is not available in Client Components, Server Actions, or Route Handlers. In Client Components you can use your translation provider's locale or Next.js's `useParams()` for the matched `[locale]` segment. In Route Handlers, await the handler's `params`; pass a locale explicitly to shared translation helpers used by Server Actions.
+
+For older Next.js versions, read `params` in a page or layout and pass the locale to child Server Components and translation helpers:
+
+```js
+export default async function Page({ params }) {
+  const { locale } = await params;
+  return <ExampleServerComponent locale={locale} />;
+}
+```
+
+Only pages and layouts receive `params` automatically; ordinary child components do not.
 
 # Usage with popular i18n libraries
 
@@ -231,7 +269,7 @@ You can also find an example project [here](https://github.com/i18nexus/next-i18
 
 ## How do I create a dropdown for a user to change the language?
 
-In our [example projects](https://github.com/i18nexus/next-i18n-router/tree/main/examples) you will find a `LanguageChanger` component showing how to do this. Note that `router.refresh` is called after changing languages. This is because Next will not route the request through the middleware if the page happens to be cached on the client. `router.refresh` ensures the middleware is run on language change, allowing the locale cookie to be set properly.
+In our [example projects](https://github.com/i18nexus/next-i18n-router/tree/main/examples) you will find a `LanguageChanger` component showing how to do this. It sets the locale cookie and uses a full page navigation so the proxy runs even when the destination was prefetched. For prefixed routing, it includes the new locale in the URL; the proxy redirects the default locale to its canonical unprefixed URL when `prefixDefault` is `false`. With `noPrefix: true`, it reloads the current URL to read the updated cookie.
 
 ## My not-found page is not working. What's wrong?
 

@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# react-i18next with next-i18n-router
 
-## Getting Started
+A working Next.js 16.3+ App Router example with English, German, and Japanese. It uses the published `next-i18n-router` package.
 
-First, run the development server:
+## Run
 
-```bash
+Use Node.js 22 LTS (22.13 or later) or Node.js 24 LTS. From this directory:
+
+```sh
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [localhost:3000](http://localhost:3000). Use the language selector to switch languages, and follow the link to the About page. English uses `/`, German uses `/de`, and Japanese uses `/ja`. The proxy also detects the browser's language and remembers language selections in a cookie. The language selector uses a full page navigation so the proxy runs even when the destination was prefetched.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How the locale reaches your components
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- `proxy.ts` uses `i18nRouter` to detect the locale and route the request.
+- `app/[locale]/layout.tsx` is the root layout. Do not add an `app/layout.tsx` above it.
+- `app/locale.ts` reads and validates `locale()` from `next/root-params`.
+- `app/i18n.ts` reads the locale itself when loading translations. Pages and nested Server Components call the helper without passing locale props. `components/ExampleServerComponent.tsx` demonstrates this.
+- Client Components receive translations through the library's provider. They do not import the server translation helper or `next/root-params`.
+- `generateStaticParams` prerenders every configured locale. Links include the appropriate locale so navigation stays in the selected language.
 
-## Learn More
+The JSON files are sample translation data. In an i18nexus project, manage source strings in i18nexus and use the CLI to sync generated JSON.
 
-To learn more about Next.js, take a look at the following resources:
+Root params are available by default in Next.js 16.3+. They are not available in Route Handlers or Server Actions; pass the locale explicitly to translation helpers used from those entry points. For older Next.js apps, read `params` in pages and layouts and pass the locale to child Server Components.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+See the [Next.js root-params documentation](https://nextjs.org/docs/app/api-reference/functions/next-root-params).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Verify
 
-## Deploy on Vercel
+```sh
+npm run lint
+npm run build
+npm run test:routing
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The routing checks build isolated copies of this example and make production HTTP requests. They verify all three languages, translated server and client content, locale-aware links, locale cookies, hidden prefixes, and Cache Components. They leave your app configuration and normal `.next` build untouched.

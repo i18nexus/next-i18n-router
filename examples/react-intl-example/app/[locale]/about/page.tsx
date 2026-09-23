@@ -4,8 +4,8 @@ import BackButton from './BackButton';
 import styles from '../page.module.css';
 import LanguageChanger from '@/components/LanguageChanger';
 
-async function Home({ params: { locale } }: { params: { locale: string } }) {
-  const intl = await getIntl(locale);
+async function About() {
+  const intl = await getIntl();
 
   return (
     <ServerIntlProvider messages={intl.messages} locale={intl.locale}>
@@ -18,4 +18,4 @@ async function Home({ params: { locale } }: { params: { locale: string } }) {
   );
 }
 
-export default Home;
+export default About;

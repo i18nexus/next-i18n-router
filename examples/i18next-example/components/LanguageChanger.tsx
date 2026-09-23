@@ -1,43 +1,43 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
+import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18nConfig from '@/i18nConfig';
-import { ChangeEvent } from 'react';
 
 export default function LanguageChanger() {
   const { i18n } = useTranslation();
   const currentLocale = i18n.language;
-  const router = useRouter();
-  const currentPathname = usePathname();
+  const pathname = usePathname();
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const newLocale = e.target.value;
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const newLocale = event.target.value;
+    document.cookie = `NEXT_LOCALE=${newLocale};path=/;max-age=2592000;SameSite=Lax`;
 
-    // set cookie for next-i18n-router
-    const days = 30;
-    const date = new Date();
-    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-    document.cookie = `NEXT_LOCALE=${newLocale};expires=${date.toUTCString()};path=/`;
-
-    // redirect to the new locale path
-    if (
-      currentLocale === i18nConfig.defaultLocale &&
-      !i18nConfig.prefixDefault
-    ) {
-      router.push('/' + newLocale + currentPathname);
-    } else {
-      router.push(
-        currentPathname.replace(`/${currentLocale}`, `/${newLocale}`)
-      );
+    if (i18nConfig.noPrefix) {
+      window.location.reload();
+      return;
     }
 
-    router.refresh();
+    const hasPrefix =
+      currentLocale !== i18nConfig.defaultLocale || i18nConfig.prefixDefault;
+    const unprefixedPath = hasPrefix
+      ? pathname.slice(`/${currentLocale}`.length) || '/'
+      : pathname;
+    // Include the new locale so the proxy also updates its preference cookie.
+    // It redirects the default locale to its canonical unprefixed URL.
+    const href =
+      `/${newLocale}${unprefixedPath === '/' ? '' : unprefixedPath}` +
+      window.location.search +
+      window.location.hash;
+
+    // A full navigation runs the proxy even if the destination was prefetched.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.assign(href);
   };
 
   return (
-    <select onChange={handleChange} value={currentLocale}>
+    <select aria-label="Language" onChange={handleChange} value={currentLocale}>
       <option value="en">English</option>
       <option value="de">Deutsch</option>
       <option value="ja">日本語</option>
